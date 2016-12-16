@@ -19,10 +19,13 @@ open Whitebox
 
 [<EntryPoint>]
 let main argv = 
-    use cmd = new CommandServer("hg", "--config ui.interactive=True serve --cmdserver pipe")
+    let dir = "C:\Projects\Tamga.sync"
+    printfn "%s" dir
+    use cmd = new CommandServer(dir)
     cmd.Hello()
     cmd.Command("log", "-l", "5")
     cmd.ReadChunks()
+        
     Console.ReadKey(true) |> ignore
     0 // return an integer exit code
 

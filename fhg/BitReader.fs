@@ -8,7 +8,8 @@ type Channel = char
 type BufferSize = uint32
 
 type ChannelOutput =
-    | Output of Channel * BufferSize * string
+    | Output of string
+    | Error of string
     | Input of Channel * BufferSize
     | Exit
 
@@ -35,6 +36,9 @@ type BinaryReader with
                 Input (channel, len)
             | 'o' | 'e' -> 
                 let data = this.ReadData(len)
-                Output (channel, len, data)
+                match channel with
+                    | 'o' -> Output data
+                    | 'e' -> Error data
+
             | _ -> Exit
 

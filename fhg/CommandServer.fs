@@ -6,44 +6,47 @@ open System.Diagnostics
 open Whitebox.BitReader
 open Whitebox.BitWriter
 
-type CommandServer(exe, cmdline) =
+type CommandServer(path) =
+
+    let logger = printfn
 
     let psi = 
-        let psi = ProcessStartInfo(exe,cmdline) 
+        let psi = ProcessStartInfo("hg", "--config ui.interactive=True serve --cmdserver pipe") 
         psi.UseShellExecute <- false
         psi.RedirectStandardOutput <- true
         psi.RedirectStandardInput <- true
         psi.RedirectStandardError <- true
-        psi.CreateNoWindow <- false
+        psi.CreateNoWindow <- true
+        psi.WorkingDirectory <- path
         psi.EnvironmentVariables.["HGENCODING"] <- "utf-8";
         psi
 
     let proc = Process.Start(psi) 
     let reader = new BinaryReader(proc.StandardOutput.BaseStream)
     let writer = new BinaryWriter(proc.StandardInput.BaseStream)
-    let readChunk() =
-        match reader.ReadOutput() with
-            | Output (channel, _, data) ->
-                printf "%c\n" channel
-                printf "%s\n" data
-            | Input (channel, _) ->
-                printf "Input:"
-            | Exit -> 
-                printf "Exit."
+
+    let printOutput = function
+        | Output data -> logger "Output: %s" data
+        | Error data -> logger "Error: %s" data
+        | Input (channel, _) -> logger "input:"
+        | Exit -> logger "Exit."
+
+    let readChunk() = reader.ReadOutput() |> printOutput
 
     member this.ReadChunks() =
-        while true do
-            match reader.ReadOutput() with
-                | Output (channel, _, data) ->
-                    printf "%c\n" channel
-                    printf "%s\n" data
-                | Input (channel, _) ->
-                    printf "Input:"
-                | Exit -> 
-                    printf "Exit."
-    
+        let generator _ = reader.ReadOutput()
+        let isNotExit = function
+            | Exit -> false
+            | _ -> true
+
+        Seq.initInfinite generator
+            |> Seq.takeWhile isNotExit
+            |> Seq.iter printOutput
+            
     member this.Hello() = readChunk()
-    member this.Command([<ParamArray>] args:string array) = writer.WriteCommand("runcommand", args)
+    member this.Command([<ParamArray>] args:string array) = 
+        logger "Command: %s\n" (String.concat " " args)
+        writer.WriteCommand("runcommand", args)
 
     interface System.IDisposable with 
         member this.Dispose() =

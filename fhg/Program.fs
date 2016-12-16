@@ -7,32 +7,6 @@
 //                           stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 // 
 
-open System
-open System.IO
-open System.Diagnostics
-open BitEx
-
-let start (exe, cmdline) =
-    let psi = new ProcessStartInfo(exe,cmdline) 
-    psi.UseShellExecute <- false
-    psi.RedirectStandardOutput <- true
-    psi.RedirectStandardInput <- true
-    psi.RedirectStandardError <- true
-    psi.CreateNoWindow <- false
-    let p = Process.Start(psi) 
-    let reader = new BinaryReader(p.StandardOutput.BaseStream)
-    let writer = new BinaryWriter(p.StandardInput.BaseStream)
-    let readChunk() =
-        match reader.ReadOutput() with
-            | Output (channel, _, data) ->
-                printf "%c\n" channel
-                printf "%s\n" data
-            | Input (channel, _) ->
-                printf "Input:"
-    
-    let hello = readChunk()
-    Console.ReadKey
-
 // def readchannel(server):
 //     channel, length = struct.unpack('>cI', server.stdout.read(5))
 //     if channel in 'IL': # input
@@ -40,9 +14,16 @@ let start (exe, cmdline) =
 //     return channel, server.stdout.read(length)
 // 
 
+open System
+open Whitebox
+
 [<EntryPoint>]
 let main argv = 
-    start ("hg", "--config ui.interactive=True serve --cmdserver pipe") |> ignore
+    use cmd = new CommandServer("hg", "--config ui.interactive=True serve --cmdserver pipe")
+    cmd.Hello()
+    cmd.Command("log", "-l", "5")
+    cmd.ReadChunks()
+    Console.ReadKey(true) |> ignore
     0 // return an integer exit code
 
 

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.25928.0
+VisualStudioVersion = 15.0.26014.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "fhg", "fhg\fhg.fsproj", "{A0821B62-BD90-4FD9-8289-9241BE8023DF}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Whitebox.FSharp", "fhg\Whitebox.FSharp.fsproj", "{A0821B62-BD90-4FD9-8289-9241BE8023DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

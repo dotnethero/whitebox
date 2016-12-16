@@ -34,7 +34,7 @@ type CommandServer(path) =
         | LineInput _ -> printf ""
         | Exit -> printf "Exit."
 
-    let readChunk() = 
+    let hello() = 
         reader.ReadOutput() |> printOutput
         printf "\n\n"
 
@@ -68,7 +68,7 @@ type CommandServer(path) =
         printf "\n\n"
         if ask then Question chunks else Data chunks
 
-    member this.Hello() = readChunk()
+    do hello()
 
     member this.Command([<ParamArray>] args:string array) = 
         writer.WriteCommand("runcommand", args)
@@ -82,3 +82,4 @@ type CommandServer(path) =
         member this.Dispose() =
             reader.Dispose()
             writer.Dispose()
+

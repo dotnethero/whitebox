@@ -22,7 +22,6 @@ let main argv =
     let dir = "C:\Projects\Tamga"
     printfn "%s" dir
     use cmd = new CommandServer(dir)
-    cmd.Hello()
 
     printfn "Press any key to log . . ."
     Console.ReadKey(true) |> ignore

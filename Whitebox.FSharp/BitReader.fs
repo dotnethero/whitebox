@@ -7,10 +7,11 @@ type Channel = char
 
 type BufferSize = uint32
 
-type ChannelOutput =
+type Chunk =
     | Output of string
     | Error of string
-    | Input of Channel * BufferSize
+    | Input of BufferSize
+    | LineInput of BufferSize
     | Exit
 
 let utf8 = System.Text.Encoding.UTF8
@@ -31,14 +32,17 @@ type BinaryReader with
     member this.ReadOutput() =
         let channel = this.ReadChannel()
         let len = this.ReadLength()
+        let read() =
+            let data = this.ReadData(len)
+            match channel with
+                | 'o' -> Output data
+                | 'e' -> Error data
+                | _ -> Exit
+
         match channel with
-            | 'L' | 'I' -> 
-                Input (channel, len)
-            | 'o' | 'e' -> 
-                let data = this.ReadData(len)
-                match channel with
-                    | 'o' -> Output data
-                    | 'e' -> Error data
-
-            | _ -> Exit
-
+            | 'I' -> Input len
+            | 'L' -> LineInput len
+            | 'o' 
+            | 'e' 
+            | _ -> read()
+                

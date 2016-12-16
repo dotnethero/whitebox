@@ -1,0 +1,64 @@
+C:\Projects\Tamga
+capabilities: getencoding runcommand
+encoding: utf-8
+pid: 18020
+
+Press any key to log . . .
+changeset:   18257:7b15530ea393
+branch:      Mix_scoring
+tag:         tip
+parent:      18256:0dd91a95972b
+parent:      18250:2d9dfd37e16c
+user:        andrew.gorbokon
+date:        Fri Dec 16 15:44:00 2016 +0200
+summary:     Merge
+
+changeset:   18256:0dd91a95972b
+branch:      Mix_scoring
+parent:      18245:ab6e68f73766
+user:        andrew.gorbokon
+date:        Fri Dec 16 15:41:32 2016 +0200
+summary:     Logs
+
+changeset:   18255:02a54928a3aa
+branch:      Release_2.37
+parent:      18252:7e9db39f9429
+parent:      18254:65406fe14c31
+user:        Anton.Kramarenko
+date:        Fri Dec 16 15:11:47 2016 +0200
+summary:     Merge with OktellManualOutgoingCall
+
+changeset:   18254:65406fe14c31
+branch:      OktellManualOutgoingCall
+user:        Anton.Kramarenko
+date:        Fri Dec 16 15:11:23 2016 +0200
+summary:     Close OktellManualOutgoingCall branch
+
+changeset:   18253:7bc99d71b0f7
+branch:      OktellManualOutgoingCall
+parent:      18247:916be0fe6b71
+parent:      18252:7e9db39f9429
+user:        Anton.Kramarenko
+date:        Fri Dec 16 15:11:14 2016 +0200
+summary:     Merge with Release_2.37
+
+Exit.
+
+Press any key to pull . . .
+pulling from https://ci.szybkagotowka.pl/hg/tamga
+http authorization required for https://ci.szybkagotowka.pl/hg/tamga
+realm: ci.szybkagotowka.pl
+user: andrew.gorbokon
+password:
+
+o3tZpfP4uQ
+searching for changes
+adding changesets
+adding manifests
+adding file changes
+added 2 changesets with 2 changes to 2 files
+(run 'hg update' to get a working copy)
+Exit.
+
+Press any key to exit . . .
+Press any key to continue . . .

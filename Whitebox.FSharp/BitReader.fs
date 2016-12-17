@@ -45,4 +45,4 @@ type BinaryReader with
             | 'o' 
             | 'e' 
             | _ -> read()
-                
+

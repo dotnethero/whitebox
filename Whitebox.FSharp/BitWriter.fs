@@ -27,7 +27,7 @@ type BinaryWriter with
             | _ -> writeArgs()
                 
 
-    member this.WriteInput (line:string) =
+    member this.WriteData (line:string) =
         let comBytes = utf8.GetBytes(line + "\n")
         this.WriteLength(uint32 comBytes.Length)
         this.Write(comBytes)

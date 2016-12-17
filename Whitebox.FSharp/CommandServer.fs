@@ -26,60 +26,46 @@ type CommandServer(path) =
     let proc = Process.Start(psi) 
     let reader = new BinaryReader(proc.StandardOutput.BaseStream)
     let writer = new BinaryWriter(proc.StandardInput.BaseStream)
-
-    let printOutput = function
-        | Output data
-        | Error data -> printf "%s" data
-        | Input _ 
-        | LineInput _ -> printf ""
-        | Exit -> printf "Exit."
-
-    let hello() = 
-        reader.ReadOutput() |> printOutput
-        printf "\n\n"
-
-    let readChunks(): CommandResult =
+    
+    let readChunks() =
         let notEOF = function
             | Exit 
             | Input _
             | LineInput _ -> false
             | _ -> true
-
+             
         let input = function
             | Input _
             | LineInput _ -> true
             | _ -> false
 
         let mutable ask = false
-        let gen() = 
+        let readChunk() = 
             let chunk = reader.ReadOutput()
             if input chunk then ask <- true
             chunk
 
         let chunks = List.ofSeq (seq { 
-            let mutable chunk = gen()
+            let mutable chunk = readChunk()
             while notEOF chunk do
                 yield chunk
-                chunk <- gen()
+                chunk <- readChunk()
             yield chunk
         })
 
-        chunks |> List.iter printOutput // print
-        printf "\n\n"
         if ask then Question chunks else Data chunks
 
-    do hello()
+    do reader.ReadOutput() |> ignore // hello
 
     member this.Command([<ParamArray>] args:string array) = 
         writer.WriteCommand("runcommand", args)
         readChunks()
 
-    member this.Data(line: string) = 
-        writer.WriteInput(line)
+    member this.PushData(line: string) = 
+        writer.WriteData(line)
         readChunks()
         
     interface System.IDisposable with 
         member this.Dispose() =
             reader.Dispose()
             writer.Dispose()
-

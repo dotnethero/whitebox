@@ -52,6 +52,7 @@
     <Compile Include="Core\Types.fs" />
     <Compile Include="Core\BitReader.fs" />
     <Compile Include="Core\BitWriter.fs" />
+    <Compile Include="Core\Chunks.fs" />
     <Compile Include="Core\CommandServer.fs" />
     <Compile Include="Commands\DiffCommand.fs" />
     <Compile Include="Commands\LogCommand.fs" />

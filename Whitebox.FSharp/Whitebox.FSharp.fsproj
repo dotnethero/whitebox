@@ -49,9 +49,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="BitWriter.fs" />
-    <Compile Include="BitReader.fs" />
-    <Compile Include="CommandServer.fs" />
+    <Compile Include="Core\Types.fs" />
+    <Compile Include="Core\BitReader.fs" />
+    <Compile Include="Core\BitWriter.fs" />
+    <Compile Include="Core\CommandServer.fs" />
+    <Compile Include="Commands\DiffCommand.fs" />
+    <Compile Include="Commands\LogCommand.fs" />
+    <Compile Include="Commands\PullCommand.fs" />
+    <Compile Include="Commands\StatusCommand.fs" />
     <Compile Include="Program.fs" />
     <Content Include="packages.config" />
     <None Include="App.config" />

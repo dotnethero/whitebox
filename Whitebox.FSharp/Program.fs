@@ -1,26 +1,44 @@
 ﻿open System
 open Whitebox
+open Whitebox.Types
+
+let ``test status`` dir =
+    StatusCommand.execute dir
+        |> List.iter (printfn "%A")
+
+let ``test diff`` dir =
+    DiffCommand.execute dir "heads.txt"
+        |> List.iter (printfn "%A")
+        
+let ``test diff by hash`` dir =
+    DiffCommand.byHash dir ".hgtags" "1f7ad170cb95"
+        |> List.iter (printfn "%A")
+
+let ``test log`` dir =
+    LogCommand.execute dir 10
+        |> List.iter (printfn "%A")
+
+let ``test pull`` dir =
+    match PullCommand.execute dir with
+        | Some cmd ->
+            printf "Password: "
+            let pswd = Console.ReadLine()
+            let result = cmd pswd
+            match result with
+                | Data chunks -> chunks |> List.iter (printfn "%A")
+                | _ -> ()
+
+        | None -> printfn "Exit."
 
 [<EntryPoint>]
 let main argv = 
     let dir = "C:\Projects\Tamga"
-    printfn "%s" dir
-    use cmd = new CommandServer(dir)
+    printfn "Workspace: %s" dir
 
-    printfn "Press any key to log . . ."
-    Console.ReadKey(true) |> ignore
-    cmd.Command("log", "-l", "5") |> ignore
+    ``test diff`` dir
 
-    printfn "Press any key to pull . . ."
-    Console.ReadKey(true) |> ignore
-    let result = cmd.Command("pull")
-    match result with
-        | Question _ ->
-            printf "Password: "
-            let data = Console.ReadLine()
-            cmd.PushData(data) |> ignore
-        | Data _ -> ()
-
-    printfn "Press any key to exit . . ."
-    Console.ReadKey(true) |> ignore
+    ``test diff by hash`` dir
+    
+    //printfn "Press any key to exit . . ."
+    //Console.ReadKey(true) |> ignore
     0 // return an integer exit code

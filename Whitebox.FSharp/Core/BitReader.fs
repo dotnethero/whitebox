@@ -2,17 +2,7 @@
 
 open System
 open System.IO
-
-type Channel = char
-
-type BufferSize = uint32
-
-type Chunk =
-    | Output of string
-    | Error of string
-    | Input of BufferSize
-    | LineInput of BufferSize
-    | Exit
+open Whitebox.Types
 
 let utf8 = System.Text.Encoding.UTF8
 

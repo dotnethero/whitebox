@@ -2,6 +2,7 @@
 
 open System
 open System.IO
+open Whitebox.Types
 
 let utf8 = System.Text.Encoding.UTF8
 
@@ -25,9 +26,8 @@ type BinaryWriter with
         match args.Length with
             | 0 -> ()
             | _ -> writeArgs()
-                
 
-    member this.WriteData (line:string) =
+    member this.WriteData(line) =
         let comBytes = utf8.GetBytes(line + "\n")
         this.WriteLength(uint32 comBytes.Length)
         this.Write(comBytes)

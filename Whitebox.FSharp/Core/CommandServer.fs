@@ -3,12 +3,9 @@
 open System
 open System.IO
 open System.Diagnostics
+open Whitebox.Types
 open Whitebox.BitReader
 open Whitebox.BitWriter
-
-type CommandResult =
-    | Data of Chunk list
-    | Question of Chunk list
 
 type CommandServer(path) =
 
@@ -57,11 +54,11 @@ type CommandServer(path) =
 
     do reader.ReadOutput() |> ignore // hello
 
-    member this.Command([<ParamArray>] args:string array) = 
+    member this.Command([<ParamArray>] args) = 
         writer.WriteCommand("runcommand", args)
         readChunks()
 
-    member this.PushData(line: string) = 
+    member this.PushData(line) = 
         writer.WriteData(line)
         readChunks()
         

@@ -2,14 +2,7 @@
 
 open System
 open Whitebox
-
-type Changeset = { 
-    Revnumber: int;
-    Date: DateTime;
-    Hash: string;
-    Author: string;
-    Summary: string;
-    Branch: string; }
+open Whitebox.Types
 
 let sym = "\u0001"
 

@@ -1,6 +1,7 @@
 ﻿open System
 open Whitebox
 open Whitebox.Types
+open Whitebox.ViewModels
 
 let ``test status`` dir =
     StatusCommand.execute dir
@@ -34,11 +35,10 @@ let ``test pull`` dir =
 let main argv = 
     let dir = "C:\Projects\Tamga"
     printfn "Workspace: %s" dir
-
-    ``test diff`` dir
-
-    ``test diff by hash`` dir
     
-    //printfn "Press any key to exit . . ."
-    //Console.ReadKey(true) |> ignore
+    let m = WorkspaceModel()
+    m.ShowChanges.Execute().Subscribe();
+
+    printfn "Press any key to exit . . ."
+    Console.ReadKey(true) |> ignore
     0 // return an integer exit code

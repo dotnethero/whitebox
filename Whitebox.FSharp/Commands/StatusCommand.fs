@@ -1,9 +1,7 @@
 ﻿module Whitebox.StatusCommand
-open Whitebox
 
-type FileStatus = { 
-    Modifier: string;
-    FilePath: string; }
+open Whitebox
+open Whitebox.Types
 
 let parseFileStatus (x:string) =
     let fields = x.Split([|' '|], 2) 

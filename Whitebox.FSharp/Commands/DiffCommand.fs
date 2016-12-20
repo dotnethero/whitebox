@@ -1,11 +1,7 @@
 ﻿module Whitebox.DiffCommand
 
 open Whitebox
-
-type LineType = Other = 0 | Add = 1 | Remove = 2
-type Line = {
-    Text: string;
-    Type: LineType; }
+open Whitebox.Types
 
 let getType (line:string) =
     if line.Length = 0 

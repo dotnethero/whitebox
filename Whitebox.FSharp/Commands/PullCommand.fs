@@ -4,8 +4,6 @@ open System
 open Whitebox
 open Whitebox.Types
 
-type PushDataCommand = string -> CommandResult
-
 let execute dir : PushDataCommand option =
 
     let cmd = new CommandServer(dir)

@@ -36,8 +36,7 @@ let main argv =
     let dir = "C:\Projects\Tamga"
     printfn "Workspace: %s" dir
     
-    let m = WorkspaceModel()
-    m.ShowChanges.Execute().Subscribe();
+    let model = WorkspaceModel.Create()
 
     printfn "Press any key to exit . . ."
     Console.ReadKey(true) |> ignore

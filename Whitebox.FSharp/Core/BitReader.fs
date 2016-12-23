@@ -10,7 +10,7 @@ type BinaryReader with
     member this.ReadChannel(): Channel = this.ReadChar()
 
     member this.ReadLength(): BufferSize =
-        let bytes = Array.init 4 (fun x -> byte 0)
+        let bytes = Array.init 4 (fun _ -> byte 0)
         this.Read(bytes, 0, 4) |> ignore
         Array.Reverse(bytes)
         BitConverter.ToUInt32(bytes, 0)

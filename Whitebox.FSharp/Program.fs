@@ -1,4 +1,5 @@
 ﻿open System
+open System.Windows.Input
 open Whitebox
 open Whitebox.Types
 open Whitebox.ViewModels
@@ -36,8 +37,11 @@ let main argv =
     let dir = "C:\Projects\Tamga"
     printfn "Workspace: %s" dir
     
-    let model = WorkspaceModel.Create()
-
-    printfn "Press any key to exit . . ."
+    let model = WorkspaceModel.Create();
+    let showChanges() = (model.ShowChanges :> ICommand).Execute(null)
+    Async.Start(async { showChanges() })
+    Async.Start(async { showChanges() })
+    printfn "Started press any key to stop . . ."
+    
     Console.ReadKey(true) |> ignore
     0 // return an integer exit code

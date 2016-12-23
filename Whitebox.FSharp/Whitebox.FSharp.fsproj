@@ -76,6 +76,7 @@
     <Compile Include="Commands\LogCommand.fs" />
     <Compile Include="Commands\PullCommand.fs" />
     <Compile Include="Commands\StatusCommand.fs" />
+    <Compile Include="ViewModels\ModelBase.fs" />
     <Compile Include="ViewModels\HistoryModel.fs" />
     <Compile Include="ViewModels\WorkspaceModel.fs" />
     <Compile Include="Program.fs" />

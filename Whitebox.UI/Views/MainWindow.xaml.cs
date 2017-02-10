@@ -9,7 +9,6 @@ namespace Whitebox.UI.Views
         {
             InitializeComponent();
             DataContext = new AppModel();
-            //DataContext = App.Resolve<AppModel>();
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)

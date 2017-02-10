@@ -13,6 +13,7 @@ type AppModel() as self =
     let mutable mode = MainWindowMode.History
     let mutable status = ""
     let mutable tabIndex = 0
+    let mutable path = "C:\Projects\hydrargyrum"
 
     do
         base.WhenPropertyChanged <@ self.Mode @>
@@ -20,6 +21,9 @@ type AppModel() as self =
         |> ignore
     
     member x.ModeSwitched p =
+        match x.Mode with
+        | MainWindowMode.``Working copy`` -> x.Workspace.ShowChanges path
+        | _ -> ()
         x.TabIndex <- int x.Mode
         x.StatusBar <- sprintf "%A" x.Mode
 

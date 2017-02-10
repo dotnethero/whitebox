@@ -24,6 +24,6 @@
         <GridSplitter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Background="GhostWhite"></GridSplitter>
         <views:WorkspaceFileView  Grid.Row="2" Grid.Column="0"></views:WorkspaceFileView>
         <GridSplitter Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" Background="GhostWhite"></GridSplitter>
-        <views:Diff Grid.Row="2" Grid.Column="2" DataContext="{Binding DiffFile}" />
+        <views:Diff Grid.Row="2" Grid.Column="2" DataContext="{Binding Diff}" />
     </Grid>
 </UserControl>

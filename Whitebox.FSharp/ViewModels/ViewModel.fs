@@ -6,6 +6,18 @@ open Microsoft.FSharp.Quotations
 open Microsoft.FSharp.Quotations.Patterns
 open Microsoft.FSharp.Linq.RuntimeHelpers
 
+[<AutoOpen>]
+module Utils =
+    let _null opt : obj =
+        match opt with
+        | Some file -> box file
+        | None -> null
+
+    let _option (nil: obj) =
+        match nil with
+        | null -> None
+        | _ -> unbox nil |> Some
+
 type ViewModel() =
 
     let empty = new Subject<PropertyChangedEventArgs>()

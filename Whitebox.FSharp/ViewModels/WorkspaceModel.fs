@@ -3,6 +3,7 @@ open System
 open Whitebox
 open Whitebox.Types
 
+
 type WorkspaceModel() as self =
     inherit ViewModel()
 
@@ -34,16 +35,9 @@ type WorkspaceModel() as self =
             x.OnPropertyChanged <@ x.Diff @>
             
     member x.CurrentFile
-        with get() = 
-            match currentFile with
-            | Some file -> file
-            | None -> null :> obj :?> FileStatus
-
+        with get() = _null currentFile
         and set(currentFile') =
-            currentFile <- 
-                match box currentFile' with
-                | null -> None
-                | _ -> Some currentFile'
+            currentFile <- _option currentFile'
             x.OnPropertyChanged <@ x.CurrentFile @>
 
     member x.ShowChanges path =

@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="Whitebox.UI.Views.Diff"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" BorderThickness="0"
+             d:DesignHeight="200" d:DesignWidth="300" DataContextChanged="Diff_OnDataContextChanged">
+    <Grid>
+        <RichTextBox 
+            x:Name="RichDiff" 
+            FontFamily="Consolas" 
+            IsReadOnly="True" 
+            BorderThickness="0"
+            VerticalScrollBarVisibility="Auto" 
+            HorizontalScrollBarVisibility="Auto">
+        </RichTextBox>
+    </Grid>
+</UserControl>

@@ -1,4 +1,4 @@
-﻿module Whitebox.Types
+﻿namespace Whitebox.Types
 
 open System
 

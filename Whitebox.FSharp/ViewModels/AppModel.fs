@@ -4,17 +4,20 @@ open Whitebox
 open Whitebox.Types
 open Whitebox.ViewModels
 open System.ComponentModel
-open System.Windows.Forms
 
 type MainWindowMode = ``Working copy`` = 0 | History = 1 | Shelves = 2
 
-type AppModel() as self =
+type IDialogService =
+    abstract member OpenFolder: unit -> string option
+    abstract member AskPassword: string -> string option
+
+type AppModel(dialogs: IDialogService) as self =
     inherit ViewModel()
     
     let mutable mode = MainWindowMode.History
     let mutable status = ""
     let mutable tabIndex = 0
-    let mutable dir : string option = None
+    let mutable dir : string option = Some "C:\Projects\hydrargyrum"
 
     do
         base.WhenPropertyChanged <@ self.Mode @>
@@ -22,14 +25,46 @@ type AppModel() as self =
         |> ignore
 
     member x.OpenRepository =
-        new TrueCommand (fun p -> x.OpenDialog())
+        new TrueCommand (x.OpenDialog)
 
-    member x.OpenDialog() =
-        let dialog = new FolderBrowserDialog()
-        let result = dialog.ShowDialog()
-        if result = DialogResult.OK then 
-            dir <- Some dialog.SelectedPath
+    member x.Pull =
+        new TrueCommand (x.PullDialog)
+
+    member x.ParseResult = function
+        | Data chunks -> ()
+        | Callback (chunks, push, close) -> 
+            
+            let parse = function
+                | Output a -> Some a
+                | Error a -> Some a
+                | _ -> None
+
+            let text = 
+                chunks
+                |> List.choose parse
+                |> List.fold (+) ""
+
+            match dialogs.AskPassword(text) with
+            | None -> ()
+            | Some password -> 
+                x.StatusBar <- password
+                let result = push password
+                x.ParseResult(result)
+
+            x.StatusBar <- "OK"
+            close()
+
+    member x.PullDialog p =
+        match dir with
+        | None -> ()
+        | Some path -> x.ParseResult(PullCommand.execute path)
+            
+    member x.OpenDialog p =
+        match dialogs.OpenFolder() with
+        | Some path -> 
+            dir <- Some path
             x.OnPropertyChanged <@ x.Mode @>
+        | None -> ()
 
     member x.ModeSwitched p =
         match x.Mode, dir with

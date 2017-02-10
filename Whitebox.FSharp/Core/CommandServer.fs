@@ -24,7 +24,7 @@ type CommandServer(path) =
     let reader = new BinaryReader(proc.StandardOutput.BaseStream)
     let writer = new BinaryWriter(proc.StandardInput.BaseStream)
     
-    let readChunks() =
+    let rec readChunks() =
         let notEOF = function
             | Exit 
             | Input _
@@ -50,7 +50,15 @@ type CommandServer(path) =
             yield chunk
         })
 
-        if ask then Question chunks else Data chunks
+        if ask then Callback (chunks, push, close) else Data chunks
+
+    and push data =
+        writer.WriteData(data)
+        readChunks()
+
+    and close() = 
+        reader.Dispose()
+        writer.Dispose()
 
     do reader.ReadOutput() |> ignore // hello
 
@@ -64,5 +72,4 @@ type CommandServer(path) =
         
     interface System.IDisposable with 
         member this.Dispose() =
-            reader.Dispose()
-            writer.Dispose()
+            close()

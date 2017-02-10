@@ -8,7 +8,7 @@ namespace Whitebox.UI.Views
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new AppModel();
+            DataContext = new AppModel(new DialogService());
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)

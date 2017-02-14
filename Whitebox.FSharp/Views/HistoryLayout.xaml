@@ -1,10 +1,9 @@
-﻿<UserControl x:Class="Whitebox.UI.Views.HistoryLayout"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:views="clr-namespace:Whitebox.UI.Views"
-             xmlns:viewModels="clr-namespace:Whitebox.ViewModels;assembly=Whitebox.FSharp"
+             xmlns:views="clr-namespace:Whitebox.Views;assembly=Whitebox.FSharp"
+             xmlns:viewModels="clr-namespace:Whitebox.ViewModels"
              mc:Ignorable="d" Background="White" BorderThickness="0"
              d:DesignHeight="500" d:DesignWidth="1000">
     <d:UserControl.DataContext>

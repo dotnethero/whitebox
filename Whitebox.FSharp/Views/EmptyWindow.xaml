@@ -1,0 +1,35 @@
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:viewModels="clr-namespace:Whitebox.ViewModels"
+        xmlns:views="clr-namespace:Whitebox.UI.Views"
+        mc:Ignorable="d" WindowState="Maximized"
+        Title="Whitebox - Select repository..." Height="800" Width="1280">
+    <Window.Resources>
+        <x:Array x:Key="BranchesStub" Type="sys:String">
+            <sys:String>default</sys:String>
+            <sys:String>stage</sys:String>
+        </x:Array>
+    </Window.Resources>
+    <d:Window.DataContext>
+        <viewModels:AppModel />
+    </d:Window.DataContext>
+    <DockPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150" MinWidth="150"></ColumnDefinition>
+                <ColumnDefinition Width="5"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="AliceBlue"></GridSplitter>
+        </Grid>
+    </DockPanel>
+</Window>
+
+
+

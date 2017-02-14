@@ -7,10 +7,6 @@ open System.ComponentModel
 
 type MainWindowMode = ``Working copy`` = 0 | History = 1 | Shelves = 2
 
-type IDialogService =
-    abstract member OpenFolder: unit -> string option
-    abstract member AskPassword: string -> string option
-
 type AppModel(dialogs: IDialogService) as self =
     inherit ViewModel()
     
@@ -23,6 +19,13 @@ type AppModel(dialogs: IDialogService) as self =
         base.WhenPropertyChanged <@ self.Mode @>
         |> Observable.subscribe self.ModeSwitched
         |> ignore
+
+    new() =
+        let mock = { new IDialogService with
+            member x.AskPassword arg: string option = Some ""
+            member x.OpenFolder() = Some ""
+        } // for xaml
+        AppModel(mock)
 
     member x.OpenRepository =
         new TrueCommand (x.OpenDialog)

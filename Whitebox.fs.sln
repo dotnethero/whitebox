@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.26206.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Whitebox.FSharp", "Whitebox.FSharp\Whitebox.FSharp.fsproj", "{A0821B62-BD90-4FD9-8289-9241BE8023DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Whitebox.UI", "Whitebox.UI\Whitebox.UI.csproj", "{B2A11905-8229-46E9-991C-62C3D789A2C2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,12 +18,6 @@ Global
 		{A0821B62-BD90-4FD9-8289-9241BE8023DF}.Dev|Any CPU.Build.0 = Debug|Any CPU
 		{A0821B62-BD90-4FD9-8289-9241BE8023DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0821B62-BD90-4FD9-8289-9241BE8023DF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B2A11905-8229-46E9-991C-62C3D789A2C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2A11905-8229-46E9-991C-62C3D789A2C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2A11905-8229-46E9-991C-62C3D789A2C2}.Dev|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2A11905-8229-46E9-991C-62C3D789A2C2}.Dev|Any CPU.Build.0 = Debug|Any CPU
-		{B2A11905-8229-46E9-991C-62C3D789A2C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2A11905-8229-46E9-991C-62C3D789A2C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

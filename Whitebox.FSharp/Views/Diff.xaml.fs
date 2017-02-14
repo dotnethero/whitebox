@@ -22,7 +22,7 @@ type Diff() =
         match t with
         | LineType.Add -> Color.FromRgb(232uy, 249uy, 210uy)
         | LineType.Remove -> Color.FromRgb(241uy, 218uy, 221uy)
-        | _ -> Color.FromRgb(0uy, 0uy, 0uy)
+        | _ -> Color.FromArgb(0uy, 0uy, 0uy, 0uy)
     
     let convertLine line =
         let color = convertType line.Type
@@ -34,6 +34,6 @@ type Diff() =
         let context = unbox<IEnumerable<Line>> e.NewValue
         let doc = new FlowDocument()
         let add x = doc.Blocks.Add(x)
-        context |> Seq.map (convertLine >> add) |> ignore
-        //RichDiff.Document = document
+        context |> Seq.iter (convertLine >> add) |> ignore
+        this.rich.Document <- doc
         ()

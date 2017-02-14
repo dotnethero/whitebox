@@ -94,24 +94,24 @@
     <Compile Include="ViewModels\HistoryModel.fs" />
     <Compile Include="ViewModels\WorkspaceModel.fs" />
     <Compile Include="ViewModels\AppModel.fs" />
-    <Content Include="packages.config" />
-    <None Include="App.config" />
-    <Compile Include="Views\PasswordDialog.xaml.fs" />
     <Resource Include="Views\EmptyWindow.xaml" />
     <Resource Include="Views\Diff.xaml" />
     <Compile Include="Views\Diff.xaml.fs" />
     <Resource Include="Views\HistoryFileView.xaml" />
+    <Compile Include="Views\HistoryFileView.xaml.fs" />
     <Resource Include="Views\HistoryLayout.xaml" />
+    <Compile Include="Views\HistoryLayout.xaml.fs" />
     <Resource Include="Views\PasswordDialog.xaml" />
+    <Compile Include="Views\PasswordDialog.xaml.fs" />
     <Resource Include="Views\WorkspaceFileView.xaml" />
+    <Compile Include="Views\WorkspaceFileView.xaml.fs" />
     <Resource Include="Views\Workspace.xaml" />
+    <Compile Include="Views\Workspace.xaml.fs" />
     <Resource Include="Views\MainWindow.xaml" />
     <Compile Include="Views\MainWindow.xaml.fs" />
-    <Compile Include="Views\HistoryFileView.xaml.fs" />
-    <Compile Include="Views\HistoryLayout.xaml.fs" />
-    <Compile Include="Views\WorkspaceFileView.xaml.fs" />
-    <Compile Include="Views\Workspace.xaml.fs" />
     <Compile Include="Program.fs" />
+    <None Include="app.config" />
+    <Content Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Choose>

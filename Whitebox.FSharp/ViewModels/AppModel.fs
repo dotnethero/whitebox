@@ -5,6 +5,10 @@ open Whitebox.Types
 open Whitebox.ViewModels
 open System.ComponentModel
 
+type IDialogService =
+    abstract member OpenFolder: unit -> string option
+    abstract member AskPassword: string -> string option
+
 type MainWindowMode = ``Working copy`` = 0 | History = 1 | Shelves = 2
 
 type AppModel(dialogs: IDialogService) as self =

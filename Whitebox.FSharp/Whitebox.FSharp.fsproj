@@ -90,7 +90,7 @@
     <Compile Include="Commands\PullCommand.fs" />
     <Compile Include="Commands\StatusCommand.fs" />
     <Compile Include="ViewModels\ViewModel.fs" />
-    <Compile Include="ViewModels\Password.fs" />
+    <Compile Include="ViewModels\PasswordViewModel.fs" />
     <Compile Include="ViewModels\HistoryModel.fs" />
     <Compile Include="ViewModels\WorkspaceModel.fs" />
     <Compile Include="ViewModels\AppModel.fs" />

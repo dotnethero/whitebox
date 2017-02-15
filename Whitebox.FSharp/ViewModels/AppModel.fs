@@ -7,7 +7,7 @@ open System.ComponentModel
 
 type IDialogService =
     abstract member OpenFolder: unit -> string option
-    abstract member AskPassword: string -> string option
+    abstract member AskPassword: AskPasswordData -> string option
 
 type MainWindowMode = ``Working copy`` = 0 | History = 1 | Shelves = 2
 
@@ -26,7 +26,7 @@ type AppModel(dialogs: IDialogService) as self =
 
     new() =
         let mock = { new IDialogService with
-            member x.AskPassword arg: string option = Some ""
+            member x.AskPassword _ = Some ""
             member x.OpenFolder() = Some ""
         } // for xaml
         AppModel(mock)
@@ -37,26 +37,17 @@ type AppModel(dialogs: IDialogService) as self =
     member x.Pull =
         new TrueCommand (x.PullDialog)
 
-    member x.ParseResult = function
-        | Data chunks -> ()
-        | Callback (chunks, push, close) -> 
+    member x.ParsePull = function
+        | Success chunks -> x.StatusBar <- "Success..."
+        | Fail chunks -> x.StatusBar <- "Fail..."
+        | AskPassword (ask, push, close) -> 
             
-            let parse = function
-                | Output a -> Some a
-                | Error a -> Some a
-                | _ -> None
-
-            let text = 
-                chunks
-                |> List.choose parse
-                |> List.fold (+) ""
-
-            match dialogs.AskPassword(text) with
+            x.StatusBar <- "Dialog..."
+            match dialogs.AskPassword(ask) with
             | None -> ()
             | Some password -> 
                 x.StatusBar <- password
-                let result = push password
-                x.ParseResult(result)
+                password |> push |> x.ParsePull
 
             x.StatusBar <- "OK"
             close()
@@ -64,7 +55,7 @@ type AppModel(dialogs: IDialogService) as self =
     member x.PullDialog p =
         match dir with
         | None -> ()
-        | Some path -> x.ParseResult(PullCommand.execute path)
+        | Some path -> PullCommand.execute path |> x.ParsePull
             
     member x.OpenDialog p =
         match dialogs.OpenFolder() with

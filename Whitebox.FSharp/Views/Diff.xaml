@@ -5,7 +5,7 @@
              mc:Ignorable="d" BorderThickness="0"
              d:DesignHeight="200" d:DesignWidth="300" DataContextChanged="DataContextChanged">
     <Grid>
-        <RichTextBox 
+        <RichTextBox
             Name="rich"
             FontFamily="Consolas" 
             IsReadOnly="True" 

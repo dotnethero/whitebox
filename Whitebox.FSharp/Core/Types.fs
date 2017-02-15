@@ -13,9 +13,22 @@ type Chunk =
     | LineInput of BufferSize
     | Exit
 
+[<NoComparison; NoEquality>]
 type CommandResult =
     | Data of Chunk list
     | Callback of Chunk list * push: (string -> CommandResult) * close: (unit -> unit)
+
+type AskPasswordData = {
+    Url: string;
+    Realm: string;
+    User: string
+}
+
+[<NoComparison; NoEquality>]
+type PullResult<'Success, 'Fail> =
+    | Success of 'Success
+    | Fail of 'Fail
+    | AskPassword of AskPasswordData * push: (string -> PullResult<'Success, 'Fail>) * close: (unit -> unit)
 
 type LineType = Other = 0 | Add = 1 | Remove = 2
 

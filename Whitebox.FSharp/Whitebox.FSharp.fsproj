@@ -40,6 +40,9 @@
     <Reference Include="FSharp.Control.Reactive">
       <HintPath>..\packages\FSharp.Control.Reactive.3.5.0\lib\net45\FSharp.Control.Reactive.dll</HintPath>
     </Reference>
+    <Reference Include="FSharp.Text.RegexProvider">
+      <HintPath>..\packages\FSharp.Text.RegexProvider.1.0.0\lib\net40\FSharp.Text.RegexProvider.dll</HintPath>
+    </Reference>
     <Reference Include="FsXaml.Wpf">
       <HintPath>..\packages\FsXaml.Wpf.3.1.2\lib\net45\FsXaml.Wpf.dll</HintPath>
     </Reference>
@@ -90,7 +93,6 @@
     <Compile Include="Commands\PullCommand.fs" />
     <Compile Include="Commands\StatusCommand.fs" />
     <Compile Include="ViewModels\ViewModel.fs" />
-    <Compile Include="ViewModels\PasswordViewModel.fs" />
     <Compile Include="ViewModels\HistoryModel.fs" />
     <Compile Include="ViewModels\WorkspaceModel.fs" />
     <Compile Include="ViewModels\AppModel.fs" />

@@ -12,9 +12,12 @@ let splitLines (x:string) = x.Split ([|"\r"; "\n"|], StringSplitOptions.RemoveEm
 let getChunks = 
     List.choose parseChunk
 
+let foldChunks =
+    List.fold (+) ""
+
 let getLines = 
     getChunks
-    >> List.fold (+) "" 
+    >> foldChunks
     >> splitLines 
     >> List.ofArray
 

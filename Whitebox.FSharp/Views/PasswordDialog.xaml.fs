@@ -12,6 +12,10 @@ type PasswordDialog() =
         this.DialogResult <- Nullable true
         this.Close()
 
+    override this.CancelClick(_,_) = 
+        this.DialogResult <- Nullable false
+        this.Close()
+
 type DialogService() =
 
     interface IDialogService with
@@ -22,8 +26,7 @@ type DialogService() =
             | _ -> None
 
         member this.AskPassword(text) =
-            let vm = PasswordViewModel(text)
-            let dialog = PasswordDialog(DataContext = vm)
+            let dialog = PasswordDialog(DataContext = text)
             match dialog.ShowDialog() with
-            | x when x.HasValue && x.Value -> Some vm.Password
+            | x when x.HasValue && x.Value -> Some dialog.passwordBox.Password
             | _ -> None

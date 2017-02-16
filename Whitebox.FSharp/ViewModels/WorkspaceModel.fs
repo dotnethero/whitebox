@@ -19,7 +19,7 @@ type WorkspaceModel() as self =
 
     member x.FileChanged p =
         match currentFile with
-        | Some file -> self.Diff <- DiffCommand.execute dir file.FilePath
+        | Some file -> self.Diff <- Commands.currentChanges dir file.FilePath
         | None -> ()
 
     member x.Files
@@ -42,5 +42,5 @@ type WorkspaceModel() as self =
 
     member x.ShowChanges path =
         dir <- path
-        x.Files <- StatusCommand.execute path
+        x.Files <- Commands.currentStatus path
 

@@ -33,7 +33,7 @@ type AppModel(dialogs: IDialogService) as self =
             close()
 
     let initRepo path = 
-        match InitCommand.execute path with
+        match Commands.init path with
         | Result.Success _ ->
             changeDir path
             sprintf "Repository initialized at %s" path |> changeStatus
@@ -43,7 +43,7 @@ type AppModel(dialogs: IDialogService) as self =
     let openPullDialog() =
         match dir with
         | None -> ()
-        | Some path -> PullCommand.execute path |> parsePull
+        | Some path -> Commands.pull path |> parsePull
 
     let ifsome f = function
         | Some s -> f s

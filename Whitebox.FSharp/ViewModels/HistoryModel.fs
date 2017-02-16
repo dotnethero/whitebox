@@ -24,13 +24,13 @@ type HistoryModel() as self =
     
     member x.FileChanged p =
         match currentChangeset, currentFile with
-        | Some changeset, Some file -> self.DiffFile <- DiffCommand.byHash dir file.FilePath changeset.Hash
+        | Some changeset, Some file -> self.DiffFile <- Commands.commitChanges dir file.FilePath changeset.Hash
         | _, _ -> ()
 
     member x.ChangesetChanged p =
         match currentChangeset with
         | Some changeset -> 
-            self.Files <- StatusCommand.byHash dir changeset.Hash
+            self.Files <- Commands.commitStatus dir changeset.Hash
             self.DiffFile <- []
         | _ -> ()
 
@@ -66,4 +66,4 @@ type HistoryModel() as self =
     
     member x.ShowLog path =
         dir <- path
-        x.Changesets <- LogCommand.execute dir 150
+        x.Changesets <- Commands.log dir 150

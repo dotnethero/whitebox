@@ -20,6 +20,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Header="Open Repository..." Command="{Binding OpenRepository}" />
+                <MenuItem Header="Init Repository..." Command="{Binding InitRepository}" />
                 <MenuItem Header="Clone Repository..." />
                 <Separator />
                 <MenuItem Header="Exit" Click="Exit" />

@@ -6,15 +6,14 @@ open System.ComponentModel
 open System.Reactive.Subjects
 open Microsoft.FSharp.Quotations
 open Microsoft.FSharp.Quotations.Patterns
-open Microsoft.FSharp.Linq.RuntimeHelpers
 
-type TrueCommand (action:(obj -> unit)) =
+type TrueCommand (action:(unit -> unit)) =
     let event = new DelegateEvent<EventHandler>()
     interface ICommand with
         [<CLIEvent>]
         member x.CanExecuteChanged = event.Publish
         member x.CanExecute arg = true
-        member x.Execute arg = action(arg)
+        member x.Execute _ = action()
 
 [<AutoOpen>]
 module Utils =

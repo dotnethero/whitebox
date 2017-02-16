@@ -90,8 +90,9 @@
     <Compile Include="Core\CommandServer.fs" />
     <Compile Include="Commands\DiffCommand.fs" />
     <Compile Include="Commands\LogCommand.fs" />
-    <Compile Include="Commands\PullCommand.fs" />
     <Compile Include="Commands\StatusCommand.fs" />
+    <Compile Include="Commands\PullCommand.fs" />
+    <Compile Include="Commands\InitCommand.fs" />
     <Compile Include="Interfaces\IDialogService.fs" />
     <Compile Include="ViewModels\ViewModel.fs" />
     <Compile Include="ViewModels\HistoryModel.fs" />

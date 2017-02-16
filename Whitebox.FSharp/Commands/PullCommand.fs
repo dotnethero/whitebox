@@ -14,7 +14,7 @@ let parse chunks =
     let rgx =
         chunks
         |> Chunks.getChunks 
-        |> Chunks.foldChunks
+        |> Chunks.foldLines
         |> regex.TypedMatch
     match rgx.Success with
     | false -> None

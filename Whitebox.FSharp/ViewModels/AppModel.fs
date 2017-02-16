@@ -15,59 +15,71 @@ type AppModel(dialogs: IDialogService) as self =
     let mutable tabIndex = 0
     let mutable dir : string option = Some "D:\hydrargyrum.hg"
 
+    let changeStatus status = self.StatusBar <- status
+    let changeDir path =
+        dir <- Some path
+        self.OnPropertyChanged <@ self.Mode @>
+
+    let rec parsePull = function
+        | Success _ -> "Pull succeeded" |> changeStatus
+        | Fail _ -> "Pull failed" |> changeStatus
+        | Ask (data, push, close) -> 
+            match dialogs.AskPassword(data) with
+            | None -> ()
+            | Some password -> 
+                self.StatusBar <- password
+                password |> push |> parsePull
+            "Pull succeeded" |> changeStatus
+            close()
+
+    let initRepo path = 
+        match InitCommand.execute path with
+        | Success _ ->
+            changeDir path
+            sprintf "Repository initialized at %s" path |> changeStatus
+        | Fail message ->
+            message |> changeStatus
+        | _ -> ()
+
+    let openPullDialog() =
+        match dir with
+        | None -> ()
+        | Some path -> PullCommand.execute path |> parsePull
+
+    let ifsome f = function
+        | Some s -> f s
+        | None -> ()
+
+    let openFolderDialog = dialogs.OpenFolder >> (ifsome changeDir)
+    let openInitDialog = dialogs.OpenFolder >> (ifsome initRepo)
+            
+    let modeSwitched _ =
+        match self.Mode, dir with
+        | MainWindowMode.``Working copy``, Some path -> self.Workspace.ShowChanges path
+        | MainWindowMode.History, Some path -> self.History.ShowLog path
+        | _ -> ()
+        self.TabIndex <- int self.Mode
+        self.StatusBar <- sprintf "%A" self.Mode
+
     do
         base.WhenPropertyChanged <@ self.Mode @>
-        |> Observable.subscribe self.ModeSwitched
+        |> Observable.subscribe modeSwitched
         |> ignore
 
+    // for xaml
     new() =
         let mock = { new IDialogService with
             member x.AskPassword _ = Some ""
             member x.OpenFolder() = Some ""
-        } // for xaml
+        }
         AppModel(mock)
 
-    member x.OpenRepository =
-        new TrueCommand (x.OpenDialog)
+    // commands
+    member x.OpenRepository = new TrueCommand (openFolderDialog)
+    member x.InitRepository = new TrueCommand (openInitDialog)
+    member x.Pull = new TrueCommand (openPullDialog)
 
-    member x.Pull =
-        new TrueCommand (x.PullDialog)
-
-    member x.ParsePull = function
-        | Success chunks -> x.StatusBar <- "Success..."
-        | Fail chunks -> x.StatusBar <- "Fail..."
-        | Ask (data, push, close) -> 
-            
-            x.StatusBar <- "Dialog..."
-            match dialogs.AskPassword(data) with
-            | None -> ()
-            | Some password -> 
-                x.StatusBar <- password
-                password |> push |> x.ParsePull
-
-            x.StatusBar <- "OK"
-            close()
-
-    member x.PullDialog p =
-        match dir with
-        | None -> ()
-        | Some path -> PullCommand.execute path |> x.ParsePull
-            
-    member x.OpenDialog p =
-        match dialogs.OpenFolder() with
-        | Some path -> 
-            dir <- Some path
-            x.OnPropertyChanged <@ x.Mode @>
-        | None -> ()
-
-    member x.ModeSwitched p =
-        match x.Mode, dir with
-        | MainWindowMode.``Working copy``, Some path -> x.Workspace.ShowChanges path
-        | MainWindowMode.History, Some path -> x.History.ShowLog path
-        | _ -> ()
-        x.TabIndex <- int x.Mode
-        x.StatusBar <- sprintf "%A" x.Mode
-
+    // properties
     member x.Mode 
         with get() = mode
         and set(mode') =

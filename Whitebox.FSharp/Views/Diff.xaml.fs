@@ -31,7 +31,7 @@ type Diff() =
         para
             
     override this.DataContextChanged(_,e) = 
-        let context = unbox<IEnumerable<Line>> e.NewValue
+        let context = unbox<Line seq> e.NewValue
         let doc = new FlowDocument()
         let add x = doc.Blocks.Add(x)
         context |> Seq.iter (convertLine >> add) |> ignore

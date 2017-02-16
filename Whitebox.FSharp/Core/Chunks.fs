@@ -7,17 +7,19 @@ let parseChunk = function
     | Output x -> Some x
     | _ -> None
 
+let parseError = function
+    | Error x -> Some x
+    | _ -> None
+
 let splitLines (x:string) = x.Split ([|"\r"; "\n"|], StringSplitOptions.RemoveEmptyEntries)
 
-let getChunks = 
-    List.choose parseChunk
-
-let foldChunks =
-    List.fold (+) ""
+let getChunks = List.choose parseChunk
+let getErrors = List.choose parseError
+let foldLines = List.fold (+) ""
 
 let getLines = 
     getChunks
-    >> foldChunks
+    >> foldLines
     >> splitLines 
     >> List.ofArray
 

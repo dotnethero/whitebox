@@ -28,7 +28,7 @@ let rec convert result =
     | Data chunks -> Success chunks
     | Callback (chunks, push, close) -> 
         match chunks |> parse with
-        | Some data -> AskPassword (data, push >> convert, close)
+        | Some data -> Ask (data, push >> convert, close)
         | None -> Fail chunks
 
 let execute dir =

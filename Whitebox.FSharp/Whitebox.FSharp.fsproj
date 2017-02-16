@@ -92,6 +92,7 @@
     <Compile Include="Commands\LogCommand.fs" />
     <Compile Include="Commands\PullCommand.fs" />
     <Compile Include="Commands\StatusCommand.fs" />
+    <Compile Include="Interfaces\IDialogService.fs" />
     <Compile Include="ViewModels\ViewModel.fs" />
     <Compile Include="ViewModels\HistoryModel.fs" />
     <Compile Include="ViewModels\WorkspaceModel.fs" />
@@ -111,6 +112,7 @@
     <Compile Include="Views\Workspace.xaml.fs" />
     <Resource Include="Views\MainWindow.xaml" />
     <Compile Include="Views\MainWindow.xaml.fs" />
+    <Compile Include="Services\DialogService.fs" />
     <Compile Include="Program.fs" />
     <None Include="app.config" />
     <Content Include="packages.config" />

@@ -4,6 +4,7 @@ open System
 open System.Windows
 open Whitebox.ViewModels
 open Whitebox.Views
+open Whitebox.Services
 
 [<STAThread>]
 [<EntryPoint>]

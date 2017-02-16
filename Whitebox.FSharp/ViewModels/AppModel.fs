@@ -3,11 +3,7 @@
 open Whitebox
 open Whitebox.Types
 open Whitebox.ViewModels
-open System.ComponentModel
-
-type IDialogService =
-    abstract member OpenFolder: unit -> string option
-    abstract member AskPassword: AskPasswordData -> string option
+open Whitebox.Services
 
 type MainWindowMode = ``Working copy`` = 0 | History = 1 | Shelves = 2
 

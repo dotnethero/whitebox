@@ -28,19 +28,23 @@ type Changeset = {
 type FileStatus = { 
     Modifier: string;
     FilePath: string; }
-
+    
 [<NoComparison; NoEquality>]
 type CommandResult =
     | Data of Chunk list
     | Callback of Chunk list * push: (string -> CommandResult) * close: (unit -> unit)
 
-[<NoComparison; NoEquality>]
-type AnyResult<'Success, 'Fail, 'Data> =
-    | Success of 'Success
-    | Fail of 'Fail
-    | Ask of 'Data * push: (string -> AnyResult<'Success, 'Fail, 'Data>) * close: (unit -> unit)
-
 type AskPasswordData = {
     Url: string;
     Realm: string;
     User: string }
+
+[<NoComparison; NoEquality>]
+type PullResult =
+    | Success of Chunk list
+    | Fail of Chunk list
+    | Ask of AskPasswordData * push: (string -> PullResult) * close: (unit -> unit)
+
+type InitResult =
+    | Success
+    | Fail of string

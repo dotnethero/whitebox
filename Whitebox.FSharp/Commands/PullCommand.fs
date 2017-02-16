@@ -5,9 +5,7 @@ open Whitebox
 open Whitebox.Types
 open FSharp.Text.RegexProvider
 
-[<Literal>]
-let Template = """realm: (?<realm>.+)\nurl: (?<url>.+)\nuser: (?<user>.+) \(fixed in hgrc or url\)"""
-type PullRegex = Regex<Template>
+type PullRegex = Regex<"""realm: (?<realm>.+)\nurl: (?<url>.+)\nuser: (?<user>.+) \(fixed in hgrc or url\)""">
 
 let regex = PullRegex()
 let parse chunks = 
@@ -25,11 +23,11 @@ let parse chunks =
 
 let rec convert result =
     match result with
-    | Data chunks -> Success chunks
+    | Data chunks -> PullResult.Success chunks
     | Callback (chunks, push, close) -> 
         match chunks |> parse with
-        | Some data -> Ask (data, push >> convert, close)
-        | None -> Fail chunks
+        | Some data -> PullResult.Ask (data, push >> convert, close)
+        | None -> PullResult.Fail chunks
 
 let execute dir =
     let cmd = new CommandServer(dir)

@@ -21,9 +21,9 @@ type AppModel(dialogs: IDialogService) as self =
         self.OnPropertyChanged <@ self.Mode @>
 
     let rec parsePull = function
-        | Success _ -> "Pull succeeded" |> changeStatus
-        | Fail _ -> "Pull failed" |> changeStatus
-        | Ask (data, push, close) -> 
+        | PullResult.Success _ -> "Pull succeeded" |> changeStatus
+        | PullResult.Fail _ -> "Pull failed" |> changeStatus
+        | PullResult.Ask (data, push, close) -> 
             match dialogs.AskPassword(data) with
             | None -> ()
             | Some password -> 
@@ -34,12 +34,11 @@ type AppModel(dialogs: IDialogService) as self =
 
     let initRepo path = 
         match InitCommand.execute path with
-        | Success _ ->
+        | InitResult.Success ->
             changeDir path
             sprintf "Repository initialized at %s" path |> changeStatus
-        | Fail message ->
+        | InitResult.Fail message ->
             message |> changeStatus
-        | _ -> ()
 
     let openPullDialog() =
         match dir with

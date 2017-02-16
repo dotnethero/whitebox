@@ -13,7 +13,7 @@ type AppModel(dialogs: IDialogService) as self =
     let mutable mode = MainWindowMode.History
     let mutable status = ""
     let mutable tabIndex = 0
-    let mutable dir : string option = Some "C:\Projects\hydrargyrum"
+    let mutable dir : string option = Some "D:\hydrargyrum.hg"
 
     do
         base.WhenPropertyChanged <@ self.Mode @>
@@ -36,10 +36,10 @@ type AppModel(dialogs: IDialogService) as self =
     member x.ParsePull = function
         | Success chunks -> x.StatusBar <- "Success..."
         | Fail chunks -> x.StatusBar <- "Fail..."
-        | AskPassword (ask, push, close) -> 
+        | Ask (data, push, close) -> 
             
             x.StatusBar <- "Dialog..."
-            match dialogs.AskPassword(ask) with
+            match dialogs.AskPassword(data) with
             | None -> ()
             | Some password -> 
                 x.StatusBar <- password

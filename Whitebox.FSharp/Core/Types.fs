@@ -1,4 +1,4 @@
-﻿namespace Whitebox.Types
+﻿module Whitebox.Types
 
 open System
 
@@ -34,17 +34,17 @@ type CommandResult =
     | Data of Chunk list
     | Callback of Chunk list * push: (string -> CommandResult) * close: (unit -> unit)
 
-type AskPasswordData = {
+type AskPassword = {
     Url: string;
     Realm: string;
     User: string }
 
 [<NoComparison; NoEquality>]
-type PullResult =
-    | Success of Chunk list
-    | Fail of Chunk list
-    | Ask of AskPasswordData * push: (string -> PullResult) * close: (unit -> unit)
+type MaybeAsk<'Success, 'Fail> =
+    | Success of 'Success
+    | Fail of 'Fail
+    | Ask of AskPassword * push: (string -> MaybeAsk<'Success, 'Fail>) * close: (unit -> unit)
 
-type InitResult =
-    | Success
-    | Fail of string
+type Result<'Success, 'Fail> =
+    | Success of 'Success
+    | Fail of 'Fail

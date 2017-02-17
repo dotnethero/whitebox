@@ -37,6 +37,6 @@ let init dir =
     match cmd.Command("init") with
     | Data chunks ->
         match Parsers.alreadyExists chunks with
-        | true  -> Result.Fail "Repository already exists"
-        | false -> Result.Success chunks
-    | _ -> Result.Fail "Init command unexpectedly requested user input"
+        | true  -> Fail "Repository already exists"
+        | false -> Success chunks
+    | _ -> Fail "Init command unexpectedly requested user input"

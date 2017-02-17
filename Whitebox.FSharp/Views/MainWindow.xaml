@@ -29,16 +29,16 @@
                 <MenuItem Header="Create Branch..." />
                 <MenuItem Header="Close Branch" />
                 <Separator />
-                <MenuItem Header="Pull" Command="{Binding Pull}" />
-                <MenuItem Header="Push..." />
+                <MenuItem Header="Pull..." Command="{Binding Pull}" />
+                <MenuItem Header="Push..." Command="{Binding Push}" />
             </MenuItem>
         </Menu>
         <ToolBarPanel DockPanel.Dock="Top" Background="AliceBlue">
             <ToolBar>
                 <Button Width="80" Height="30" Command="{Binding OpenRepository}">Open</Button>
                 <Separator></Separator>
-                <Button Width="80" Height="30">Push</Button>
                 <Button Width="80" Height="30" Command="{Binding Pull}">Pull</Button>
+                <Button Width="80" Height="30" Command="{Binding Push}">Push</Button>
                 <Separator></Separator>
                 <Button Width="80" Height="30">Apply</Button>
                 <Button Width="80" Height="30">Save</Button>

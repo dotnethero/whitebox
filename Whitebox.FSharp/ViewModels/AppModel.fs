@@ -15,43 +15,6 @@ type AppModel(dialogs: IDialogService) as self =
     let mutable tabIndex = 0
     let mutable dir : string option = Some "D:\hydrargyrum.hg"
 
-    let changeStatus status = self.StatusBar <- status
-    let changeDir path =
-        dir <- Some path
-        self.OnPropertyChanged <@ self.Mode @>
-
-    let rec parsePull = function
-        | MaybeAsk.Success _ -> "Pull succeeded" |> changeStatus
-        | MaybeAsk.Fail _ -> "Pull failed" |> changeStatus
-        | MaybeAsk.Ask (data, push, close) -> 
-            match dialogs.AskPassword(data) with
-            | None -> ()
-            | Some password -> 
-                self.StatusBar <- password
-                password |> push |> parsePull
-            "Pull succeeded" |> changeStatus
-            close()
-
-    let initRepo path = 
-        match Commands.init path with
-        | Result.Success _ ->
-            changeDir path
-            sprintf "Repository initialized at %s" path |> changeStatus
-        | Result.Fail message ->
-            message |> changeStatus
-
-    let openPullDialog() =
-        match dir with
-        | None -> ()
-        | Some path -> Commands.pull path |> parsePull
-
-    let ifsome f = function
-        | Some s -> f s
-        | None -> ()
-
-    let openFolderDialog = dialogs.OpenFolder >> (ifsome changeDir)
-    let openInitDialog = dialogs.OpenFolder >> (ifsome initRepo)
-            
     let modeSwitched _ =
         match self.Mode, dir with
         | MainWindowMode.``Working copy``, Some path -> self.Workspace.ShowChanges path
@@ -60,6 +23,53 @@ type AppModel(dialogs: IDialogService) as self =
         self.TabIndex <- int self.Mode
         self.StatusBar <- sprintf "%A" self.Mode
 
+    let changeStatus status = self.StatusBar <- status
+    let changeDir path =
+        dir <- Some path
+        self.OnPropertyChanged <@ self.Mode @>
+
+    let rec parseMaybeAsk(success, failure) = function
+        | MaybeAsk.Success _ -> success |> changeStatus
+        | MaybeAsk.Fail _ -> failure |> changeStatus
+        | MaybeAsk.Ask (data, push, close) -> 
+            match dialogs.AskPassword(data) with
+            | None -> ()
+            | Some password -> 
+                self.StatusBar <- password
+                password |> push |> parseMaybeAsk (success, failure)
+            success |> changeStatus
+            close()
+
+    let init(path) = 
+        match Commands.init path with
+        | Success _ ->
+            changeDir path
+            sprintf "Repository initialized at %s" path |> changeStatus
+        | Fail message ->
+            message |> changeStatus
+    
+    // commands
+
+    let openCommand() = 
+        match dialogs.OpenFolder() with
+        | Some path -> changeDir path
+        | None -> ()
+
+    let initCommand() = 
+        match dialogs.OpenFolder() with
+        | Some path -> init path
+        | None -> ()
+
+    let pushCommand() = 
+        match dir with
+        | Some path -> Commands.push path |> parseMaybeAsk ("Push succeeded", "Push failed")
+        | None -> ()
+
+    let pullCommand() =
+        match dir with
+        | Some path -> Commands.pull path |> parseMaybeAsk ("Pull succeeded", "Pull failed")
+        | None -> ()
+      
     do
         base.WhenPropertyChanged <@ self.Mode @>
         |> Observable.subscribe modeSwitched
@@ -74,9 +84,10 @@ type AppModel(dialogs: IDialogService) as self =
         AppModel(mock)
 
     // commands
-    member x.OpenRepository = new TrueCommand (openFolderDialog)
-    member x.InitRepository = new TrueCommand (openInitDialog)
-    member x.Pull = new TrueCommand (openPullDialog)
+    member x.OpenRepository = new TrueCommand (openCommand)
+    member x.InitRepository = new TrueCommand (initCommand)
+    member x.Pull = new TrueCommand (pullCommand)
+    member x.Push = new TrueCommand (pushCommand)
 
     // properties
     member x.Mode 

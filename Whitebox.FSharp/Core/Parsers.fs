@@ -12,8 +12,7 @@ let askPassword chunks =
     let regex = AskPasswordRegex()
     let m =
         chunks
-        |> Chunks.getChunks 
-        |> Chunks.foldLines
+        |> Chunks.getOutput
         |> regex.TypedMatch
     if m.Success 
         then 
@@ -24,19 +23,22 @@ let askPassword chunks =
 
 let alreadyExists chunks = 
     chunks
-    |> Chunks.getErrors 
-    |> Chunks.foldLines
+    |> Chunks.getError
     |> ExistsRegex.TypedIsMatch
 
 // commnds
 
 let rec maybeAsk result =
     match result with
-    | Data chunks -> MaybeAsk.Success chunks
+    | Data chunks -> 
+        if chunks |> Chunks.hasError
+            then MaybeAsk.Fail (chunks |> Chunks.getText)
+            else MaybeAsk.Success (chunks |> Chunks.getText)
+
     | Callback (chunks, push, close) -> 
         match chunks |> askPassword with
         | Some data -> MaybeAsk.Ask (data, push >> maybeAsk, close)
-        | None -> MaybeAsk.Fail chunks
+        | None -> MaybeAsk.Fail (chunks |> Chunks.getText)
 
 // statuses
 

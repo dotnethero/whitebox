@@ -26,6 +26,11 @@ type Changeset = {
     Branch: string;
     Phase: string; }
 
+type Branch = { 
+    Revnumber: int;
+    Hash: string;
+    Name: string; }
+
 type FileStatus() =  
     member val Modifier: string = "" with get, set
     member val FilePath: string = "" with get, set

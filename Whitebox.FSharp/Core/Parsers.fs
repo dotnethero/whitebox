@@ -48,6 +48,24 @@ let parseFileStatus (x:string) =
 
 let parseFileStatuses = Chunks.getLinesFromResult >> List.map parseFileStatus
 
+// branches
+
+let parseBranches chunks =
+    let rec compose = function
+        | name :: rev :: inactive :: endline :: tail when endline = "\n" -> 
+            let fields = rev.Split([|':'|], 2) 
+            { Name = name; 
+            Revnumber = Int32.Parse fields.[0]; 
+            Hash = fields.[1] } :: compose tail
+        | name :: rev :: endline :: tail when endline = "\n" -> 
+            let fields = rev.Split([|':'|], 2) 
+            { Name = name; 
+            Revnumber = Int32.Parse fields.[0]; 
+            Hash = fields.[1] } :: compose tail
+        | _ :: tail -> []
+        | [] -> []
+    chunks |> Chunks.getChunksFromResult |> compose
+
 // changesets
 
 let sym = "\u0001"

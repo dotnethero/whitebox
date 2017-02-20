@@ -11,6 +11,6 @@ open Whitebox.Services
 let main args =
     let ds = new DialogService()
     let vm = AppModel(ds)
-    let window = new MainWindow(DataContext = vm)
+    let window = new MainWindow(vm)
     let app = new Application()
     app.Run(window)

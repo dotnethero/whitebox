@@ -13,6 +13,7 @@ type AppModel(dialogs: IDialogService) as self =
     let mutable mode = MainWindowMode.``Working copy``
     let mutable status = ""
     let mutable tabIndex = 0
+    let mutable branches = []
     let mutable dir : string option = Some "D:\hydrargyrum.hg"
 
     let modeSwitched _ =
@@ -22,6 +23,7 @@ type AppModel(dialogs: IDialogService) as self =
         | _ -> ()
         self.TabIndex <- int self.Mode
         self.StatusBar <- sprintf "%A" self.Mode
+        self.Branches <- Commands.branches dir.Value
 
     let changeStatus status = self.StatusBar <- status
     let changeDir path =
@@ -75,13 +77,8 @@ type AppModel(dialogs: IDialogService) as self =
         |> Observable.subscribe modeSwitched
         |> ignore
 
-    // for xaml
-    new() =
-        let mock = { new IDialogService with
-            member x.AskPassword _ = Some ""
-            member x.OpenFolder() = Some ""
-        }
-        AppModel(mock)
+    member x.Load _ =
+        modeSwitched()
 
     // commands
     member x.OpenRepository = new TrueCommand (openCommand)
@@ -107,6 +104,12 @@ type AppModel(dialogs: IDialogService) as self =
         and set(status') =
             status <- status'
             x.OnPropertyChanged <@ x.StatusBar @>
+            
+    member x.Branches 
+        with get() = branches
+        and set(branches') =
+            branches <- branches'
+            x.OnPropertyChanged <@ x.Branches @>
 
     member val History: HistoryModel = HistoryModel() with get
     member val Workspace: WorkspaceModel = WorkspaceModel() with get

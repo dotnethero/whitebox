@@ -6,16 +6,13 @@
         xmlns:viewModels="clr-namespace:Whitebox.ViewModels"
         xmlns:views="clr-namespace:Whitebox.Views;assembly=Whitebox.FSharp"
         mc:Ignorable="d" WindowState="Normal"
-        Title="Whitebox - Select repository..." Height="800" Width="1280">
+        Title="Whitebox - Select repository..." Height="800" Width="1280" Loaded="Loaded">
     <Window.Resources>
         <x:Array x:Key="BranchesStub" Type="sys:String">
             <sys:String>default</sys:String>
             <sys:String>stage</sys:String>
         </x:Array>
     </Window.Resources>
-    <d:Window.DataContext>
-        <viewModels:AppModel />
-    </d:Window.DataContext>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
@@ -57,7 +54,7 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150" MinWidth="150"></ColumnDefinition>
+                <ColumnDefinition Width="200" MinWidth="150"></ColumnDefinition>
                 <ColumnDefinition Width="5"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
@@ -66,15 +63,15 @@
                 <ListView BorderThickness="0" ItemsSource="{Binding Modes}" SelectedItem="{Binding Mode}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Label Padding="20,5,5,5" Content="{Binding}"></Label>
+                            <TextBlock Padding="20,5,5,5" Text="{Binding}"></TextBlock>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
                 <Label FontSize="14" Foreground="SlateGray">Branches</Label>
-                <ListView BorderThickness="0" ItemsSource="{StaticResource BranchesStub}">
+                <ListView BorderThickness="0" ItemsSource="{Binding Branches}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Label Padding="20,5,5,5" Content="{Binding}"></Label>
+                            <TextBlock Padding="20,5,5,5" Text="{Binding Name}"></TextBlock>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

@@ -15,7 +15,11 @@ let commitChanges dir path hash =
 let log dir limit =
     use cmd = start dir
     cmd.Command("log", "-l", string limit, "-T", Parsers.changesetTemplate) |> Parsers.parseChangesets
-    
+
+let branches dir =
+    use cmd = start dir
+    cmd.Command("branches") |> Parsers.parseBranches
+
 let currentStatus dir =
     use cmd = start dir
     cmd.Command("status") |> Parsers.parseFileStatuses
@@ -33,7 +37,7 @@ let push dir =
     cmd.Command("push") |> Parsers.maybeAsk
 
 let commit dir message files =
-    let cmd = start dir
+    use cmd = start dir
     let parameters = seq {
         yield "commit"
         yield "-A"

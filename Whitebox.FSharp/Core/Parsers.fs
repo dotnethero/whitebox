@@ -51,7 +51,7 @@ let parseFileStatuses = Chunks.getLinesFromResult >> List.map parseFileStatus
 // changesets
 
 let sym = "\u0001"
-let changesetTemplate = "{rev}" + sym + "{node}" + sym + "{author}" + sym + "{date|isodate}" + sym + "{desc}" + sym + "{branch}"
+let changesetTemplate = "{rev}" + sym + "{node}" + sym + "{author}" + sym + "{date|isodate}" + sym + "{desc}" + sym + "{branch}" + sym + "{phase}"
 
 let parseChangeset (x:string) =
     let fields = x.Split([|sym|], StringSplitOptions.RemoveEmptyEntries) 
@@ -60,7 +60,8 @@ let parseChangeset (x:string) =
     Author = fields.[2];
     Date = DateTime.Parse(fields.[3]);
     Summary = fields.[4];
-    Branch = fields.[5]; }
+    Branch = fields.[5];
+    Phase = fields.[6]; }
 
 let parseChangesets = Chunks.getChunksFromResult >> List.map parseChangeset
 

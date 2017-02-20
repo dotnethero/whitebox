@@ -23,7 +23,8 @@ type Changeset = {
     Hash: string;
     Author: string;
     Summary: string;
-    Branch: string; }
+    Branch: string;
+    Phase: string; }
 
 type FileStatus() =  
     member val Modifier: string = "" with get, set

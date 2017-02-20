@@ -25,9 +25,10 @@ type Changeset = {
     Summary: string;
     Branch: string; }
 
-type FileStatus = { 
-    Modifier: string;
-    FilePath: string; }
+type FileStatus() =  
+    member val Modifier: string = "" with get, set
+    member val FilePath: string = "" with get, set
+    member val Selected: bool = false with get, set
     
 [<NoComparison; NoEquality>]
 type CommandResult =

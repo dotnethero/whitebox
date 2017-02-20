@@ -32,6 +32,19 @@ let push dir =
     let cmd = start dir
     cmd.Command("push") |> Parsers.maybeAsk
 
+let commit dir message files =
+    let cmd = start dir
+    let parameters = seq {
+        yield "commit"
+        yield "-A"
+        yield "-m"
+        yield message
+        for x in files do 
+            yield "-I"
+            yield x
+    }
+    cmd.Command(parameters |> Array.ofSeq)
+
 let init dir =
     use cmd = start dir
     match cmd.Command("init") with

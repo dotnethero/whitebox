@@ -5,7 +5,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:viewModels="clr-namespace:Whitebox.ViewModels"
         xmlns:views="clr-namespace:Whitebox.Views;assembly=Whitebox.FSharp"
-        mc:Ignorable="d" WindowState="Maximized"
+        mc:Ignorable="d" WindowState="Normal"
         Title="Whitebox - Select repository..." Height="800" Width="1280">
     <Window.Resources>
         <x:Array x:Key="BranchesStub" Type="sys:String">

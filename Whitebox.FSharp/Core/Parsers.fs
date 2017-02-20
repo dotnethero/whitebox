@@ -44,7 +44,7 @@ let rec maybeAsk result =
 
 let parseFileStatus (x:string) =
     let fields = x.Split([|' '|], 2) 
-    { Modifier = fields.[0]; FilePath = fields.[1]; }
+    FileStatus ( Modifier = fields.[0], FilePath = fields.[1], Selected = false )
 
 let parseFileStatuses = Chunks.getLinesFromResult >> List.map parseFileStatus
 

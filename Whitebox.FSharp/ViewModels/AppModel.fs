@@ -10,7 +10,7 @@ type MainWindowMode = ``Working copy`` = 0 | History = 1 | Shelves = 2
 type AppModel(dialogs: IDialogService) as self =
     inherit ViewModel()
     
-    let mutable mode = MainWindowMode.History
+    let mutable mode = MainWindowMode.``Working copy``
     let mutable status = ""
     let mutable tabIndex = 0
     let mutable dir : string option = Some "D:\hydrargyrum.hg"

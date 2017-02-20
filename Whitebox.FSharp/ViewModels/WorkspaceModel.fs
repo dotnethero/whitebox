@@ -57,5 +57,10 @@ type WorkspaceModel() as self =
         |> List.toSeq
         |> Commands.commit dir x.Comment 
         |> ignore
+        
+    member x.OpenContainingFolder _ =
+        Open.directory dir
 
     member x.CommitCommand = new TrueCommand (x.Commit)
+
+    member x.OpenContainingFolderCommand =  new TrueCommand (x.OpenContainingFolder)

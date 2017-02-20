@@ -7,6 +7,11 @@ open Whitebox.Types
 open Whitebox.BitReader
 open Whitebox.BitWriter
 
+module Open =
+    let directory path =
+        let psi = ProcessStartInfo("explorer", path) 
+        Process.Start(psi) |> ignore
+
 type CommandServer(path) =
 
     let psi = 

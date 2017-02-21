@@ -44,13 +44,21 @@ type CommandResult =
 type AskPassword = {
     Url: string;
     Realm: string;
-    User: string }
+    User: string; }
+
+type AskUser = {
+    Url: string;
+    Realm: string; }
+
+type AskPasswordOrUser =
+    | AskPassword of AskPassword
+    | AskUser of AskUser
 
 [<NoComparison; NoEquality>]
 type MaybeAsk<'Success, 'Fail> =
     | Success of 'Success
     | Fail of 'Fail
-    | Ask of AskPassword * push: (string -> MaybeAsk<'Success, 'Fail>) * close: (unit -> unit)
+    | Ask of AskPasswordOrUser * push: (string -> MaybeAsk<'Success, 'Fail>) * close: (unit -> unit)
 
 type Result<'Success, 'Fail> =
     | Success of 'Success

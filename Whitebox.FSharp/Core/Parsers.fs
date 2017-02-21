@@ -5,20 +5,29 @@ open Whitebox
 open Whitebox.Types
 open FSharp.Text.RegexProvider
 
-type AskPasswordRegex = Regex<"""realm: (?<realm>.+)\nurl: (?<url>.+)\nuser: (?<user>.+) \(fixed in hgrc or url\)""">
+type AskUserRegex = Regex<"""realm: (?<realm>.+)\nurl: (?<url>.+)\nuser:""">
+type AskPasswordRegex = Regex<"""realm: (?<realm>.+)\nurl: (?<url>.+)\nuser: (?<user>.+) \(fixed in hgrc or url\)\npassword:""">
 type ExistsRegex = Regex<"already exists!">
 
-let askPassword chunks = 
+let (|AskPassword|_|) chunks = 
     let regex = AskPasswordRegex()
-    let m =
-        chunks
-        |> Chunks.getOutput
-        |> regex.TypedMatch
+    let m = chunks |> Chunks.getText |> regex.TypedMatch
     if m.Success 
         then 
-        Some { Url =   m.url.Value;
-               Realm = m.realm.Value;
-               User =  m.user.Value }
+        Some <| AskPassword { 
+            Url =   m.url.Value;
+            Realm = m.realm.Value;
+            User =  m.user.Value }
+        else None
+
+let (|AskUser|_|) chunks = 
+    let regex = AskUserRegex()
+    let m = chunks |> Chunks.getText |> regex.TypedMatch
+    if m.Success 
+        then 
+        Some <| AskUser { 
+            Url =   m.url.Value;
+            Realm = m.realm.Value }
         else None
 
 let alreadyExists chunks = 
@@ -36,9 +45,10 @@ let rec maybeAsk result =
             else MaybeAsk.Success (chunks |> Chunks.getText)
 
     | Callback (chunks, push, close) -> 
-        match chunks |> askPassword with
-        | Some data -> MaybeAsk.Ask (data, push >> maybeAsk, close)
-        | None -> MaybeAsk.Fail (chunks |> Chunks.getText)
+        match chunks with
+        | AskPassword data -> Ask (AskPassword data, push >> maybeAsk, close)
+        | AskUser data -> Ask (AskUser data, push >> maybeAsk, close)
+        | _ -> MaybeAsk.Fail (chunks |> Chunks.getText)
 
 // statuses
 

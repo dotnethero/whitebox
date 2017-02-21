@@ -2,6 +2,8 @@
 
 open System.Windows.Forms
 open Whitebox.Views
+open Whitebox.Types
+open System.Windows.Media
 
 type DialogService() =
 
@@ -12,8 +14,18 @@ type DialogService() =
             | DialogResult.OK -> Some dialog.SelectedPath
             | _ -> None
 
-        member this.AskPassword(text) =
-            let dialog = PasswordDialog(DataContext = text)
+        member this.AskPassword(ask) =
+            let create text readonlyUser = 
+                let window = PasswordDialog(DataContext = text)
+                window.userBox.IsReadOnly <- readonlyUser
+                window.userBox.Background <- if readonlyUser then SolidColorBrush(Colors.WhiteSmoke) else SolidColorBrush(Colors.White)
+                window
+
+            let dialog = 
+                match ask with
+                | AskUser text -> create text false
+                | AskPassword text -> create text true
+
             match dialog.ShowDialog() with
-            | x when x.HasValue && x.Value -> Some dialog.passwordBox.Password
+            | x when x.HasValue && x.Value -> Some (dialog.userBox.Text, dialog.passwordBox.Password)
             | _ -> None

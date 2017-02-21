@@ -34,11 +34,15 @@ type AppModel(dialogs: IDialogService) as self =
         | MaybeAsk.Success _ -> success |> changeStatus
         | MaybeAsk.Fail _ -> failure |> changeStatus
         | MaybeAsk.Ask (data, push, close) -> 
-            match dialogs.AskPassword(data) with
-            | None -> ()
-            | Some password -> 
+            match data, dialogs.AskPassword(data) with
+            | AskUser _, Some (username, password) -> 
+                self.StatusBar <- sprintf "%s %s" username password
+                username |> push |> ignore
+                password |> push |> parseMaybeAsk (success, failure)
+            | AskPassword _, Some (_, password) -> 
                 self.StatusBar <- password
                 password |> push |> parseMaybeAsk (success, failure)
+            | _ -> ()
             success |> changeStatus
             close()
 

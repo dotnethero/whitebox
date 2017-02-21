@@ -35,6 +35,14 @@ let pull dir =
 let push dir =
     let cmd = start dir
     cmd.Command("push") |> Parsers.maybeAsk
+       
+let incoming dir =
+    let cmd = start dir
+    cmd.Command("incoming") |> Parsers.maybeAsk
+
+let outgoing dir =
+    let cmd = start dir
+    cmd.Command("outgoing") |> Parsers.maybeAsk
 
 let commit dir message files =
     use cmd = start dir

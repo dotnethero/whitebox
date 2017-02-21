@@ -50,25 +50,19 @@ let parseFileStatuses = Chunks.getLinesFromResult >> List.map parseFileStatus
 
 // branches
 
+let sym = "\u0001"
+let branchTemplate = "{rev}" + sym + "{node}" + sym + "{branch}"
+
 let parseBranches chunks =
-    let rec compose = function
-        | name :: rev :: inactive :: endline :: tail when endline = "\n" -> 
-            let fields = rev.Split([|':'|], 2) 
-            { Name = name; 
-            Revnumber = Int32.Parse fields.[0]; 
-            Hash = fields.[1] } :: compose tail
-        | name :: rev :: endline :: tail when endline = "\n" -> 
-            let fields = rev.Split([|':'|], 2) 
-            { Name = name; 
-            Revnumber = Int32.Parse fields.[0]; 
-            Hash = fields.[1] } :: compose tail
-        | _ :: tail -> []
-        | [] -> []
-    chunks |> Chunks.getChunksFromResult |> compose
+    let parseOne (x:string) =
+        let fields = x.Split([|sym|], StringSplitOptions.RemoveEmptyEntries) 
+        { Revnumber = Int32.Parse fields.[0]; 
+        Hash = fields.[1] ; 
+        Name = fields.[2] } 
+    chunks |> Chunks.getChunksFromResult |> List.map parseOne
 
 // changesets
 
-let sym = "\u0001"
 let changesetTemplate = "{rev}" + sym + "{node}" + sym + "{author}" + sym + "{date|isodate}" + sym + "{desc}" + sym + "{branch}" + sym + "{phase}"
 
 let parseChangeset (x:string) =

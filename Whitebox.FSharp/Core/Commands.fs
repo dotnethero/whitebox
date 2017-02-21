@@ -18,7 +18,7 @@ let log dir limit =
 
 let branches dir =
     use cmd = start dir
-    cmd.Command("branches") |> Parsers.parseBranches
+    cmd.Command("branches", "-T", Parsers.branchTemplate) |> Parsers.parseBranches
 
 let currentStatus dir =
     use cmd = start dir

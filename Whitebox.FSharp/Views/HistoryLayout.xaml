@@ -20,7 +20,8 @@
             <ColumnDefinition Width="5"></ColumnDefinition>
             <ColumnDefinition Width="2*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <ListView Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Foreground="Black" BorderThickness="0" ItemsSource="{Binding Changesets}" SelectedItem="{Binding CurrentChangeset}">
+        <ListView Name="listview"  Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Foreground="Black" Background="Transparent" BorderThickness="0" 
+                  ItemsSource="{Binding Changesets}" SelectedItem="{Binding CurrentChangeset}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -28,6 +29,12 @@
             </ListView.ItemContainerStyle>
             <ListView.View>
                 <GridView>
+                    <GridViewColumn Header="" Width="75">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <GridViewColumn Header="#" Width="50">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -70,21 +77,10 @@
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
-            <!--<ListView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Vertical" Margin="50,1,1,1">
-                        <TextBlock Text="{Binding Summary}" FontSize="14"></TextBlock>
-                        <TextBlock FontSize="12" Foreground="Gray">
-                            <TextBlock Text="{Binding Date, StringFormat=yyyy-MM-dd}" MinWidth="100"></TextBlock>
-                            <TextBlock Text="{Binding Author}"></TextBlock>
-                        </TextBlock>
-                        <TextBlock Text="{Binding Branch}" FontSize="14"></TextBlock>
-                        <TextBlock Text="{Binding Phase}" FontSize="14"></TextBlock>
-                        <TextBlock Text="{Binding Hash}" FontSize="14"></TextBlock>
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>-->
         </ListView>
+        <Canvas Name="canvas" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3">
+            <Rectangle Fill="LightBlue" Canvas.Left="25" Canvas.Top="35" Width="50" Height="50" />
+        </Canvas>
         <GridSplitter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Background="GhostWhite"></GridSplitter>
         <views:HistoryFileView Grid.Row="2" Grid.Column="0"></views:HistoryFileView>
         <GridSplitter Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" Background="GhostWhite"></GridSplitter>

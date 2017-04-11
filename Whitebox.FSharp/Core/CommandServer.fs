@@ -30,13 +30,13 @@ type CommandServer(path) =
     let writer = new BinaryWriter(proc.StandardInput.BaseStream)
     
     let rec readChunks() =
-        let notEOF = function
+        let (|NotEOF|_|) = function
             | Exit 
             | Input _
-            | LineInput _ -> false
-            | _ -> true
+            | LineInput _ -> None
+            | x -> Some x
              
-        let input = function
+        let (|NeedAsk|) = function
             | Input _
             | LineInput _ -> true
             | _ -> false
@@ -44,17 +44,16 @@ type CommandServer(path) =
         let mutable ask = false
         let readChunk() = 
             let chunk = reader.ReadOutput()
-            if input chunk then ask <- true
+            match chunk with 
+            | NeedAsk(b) -> ask <- b
             chunk
 
-        let chunks = List.ofSeq (seq { 
-            let mutable chunk = readChunk()
-            while notEOF chunk do
-                yield chunk
-                chunk <- readChunk()
-            yield chunk
-        })
-
+        let rec getChunks lst =
+            match readChunk() with
+            | NotEOF x -> x :: getChunks lst
+            | _ -> []
+            
+        let chunks = getChunks[]
         if ask then Callback (chunks, push, close) else Data chunks
 
     and push data =

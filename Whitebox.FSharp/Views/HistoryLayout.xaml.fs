@@ -7,28 +7,36 @@ open System.Windows.Media
 open System.Diagnostics
 open System.Windows.Controls
 open System.Windows.Controls.Primitives
+open Whitebox.Types
 open Whitebox.ViewModels
 
 type HistoryLayoutBase = FsXaml.XAML<"Views/HistoryLayout.xaml">
 type HistoryLayout() as self =
     inherit HistoryLayoutBase()
+
+    let radius = 5.0
+    let dia = radius * 2.0
+    let left = 25.0
     
-    let notNull x = x <> null
-
-    let makeMarkerFor (lv: ListView) (element: ListViewItem) = 
-        let location = element.TranslatePoint(Point(25.0, element.ActualHeight / 2.0 - 5.0), lv);
-        let dot = new Ellipse(Stroke = Brushes.Black, StrokeThickness = 1.5, Width = 10.0, Height = 10.0)
-        Canvas.SetTop  (dot, location.Y)
-        Canvas.SetLeft (dot, location.X)
-        dot
-
-    let makeMarkers (lv: ListView) =
+    let gatherOne (lv: ListView) (element: ListViewItem) = 
+        let location = element.TranslatePoint(Point(left, element.ActualHeight / 2.0 - radius), lv);
+        let commit = element.DataContext :?> Changeset
+        location, commit
+        
+    let gatherMany (lv: ListView) =
         lv.Items
         |> Seq.cast<obj>
         |> Seq.map lv.ItemContainerGenerator.ContainerFromItem
         |> Seq.cast<ListViewItem>
-        |> Seq.filter notNull
-        |> Seq.map (makeMarkerFor lv)
+        |> Seq.filter (fun item -> item <> null)
+        |> Seq.map (gatherOne lv)
+
+    let makeElements (location: Point, commit) = seq {
+        let dot = new Ellipse(Stroke = Brushes.Black, StrokeThickness = 1.5, Width = dia, Height = dia)
+        Canvas.SetTop  (dot, location.Y)
+        Canvas.SetLeft (dot, location.X)
+        yield dot :> UIElement
+    }
 
     let drawMarkersOn (canvas: Canvas) dots  =
         canvas.Children.Clear()
@@ -41,5 +49,7 @@ type HistoryLayout() as self =
     
     member private this.Draw e =
         this.listview
-            |> makeMarkers
+            |> gatherMany
+            |> Seq.filter (fun (loc, _) -> loc.Y > 30.0)
+            |> Seq.collect makeElements
             |> drawMarkersOn this.canvas

@@ -21,6 +21,8 @@ type Changeset = {
     Revnumber: int;
     Date: DateTime;
     Hash: string;
+    Parent1: string;
+    Parent2: string;
     Author: string;
     Summary: string;
     Branch: string;
@@ -42,12 +44,12 @@ type CommandResult =
     | Callback of Chunk list * push: (string -> CommandResult) * close: (unit -> unit)
 
 type AskPassword = {
-    Url: string;
+    Url: string option;
     Realm: string;
     User: string; }
 
 type AskUser = {
-    Url: string;
+    Url: string option;
     Realm: string; }
 
 type AskPasswordOrUser =

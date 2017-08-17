@@ -5,30 +5,35 @@ open Whitebox
 open Whitebox.Types
 open FSharp.Text.RegexProvider
 
-type AskUserRegex = Regex<"""realm: (?<realm>.+)\nurl: (?<url>.+)\nuser:""">
-type AskPasswordRegex = Regex<"""realm: (?<realm>.+)\nurl: (?<url>.+)\nuser: (?<user>.+) \(fixed in hgrc or url\)\npassword:""">
 type ExistsRegex = Regex<"already exists!">
+type RealmRegex = Regex<"realm: (?<realm>.+)">
+type UserRegex = Regex<"user: (?<user>.+)">
+type UrlRegex = Regex<"url: (?<url>.+)">
+type AskUserRegex = Regex<"user:">
+type AskPasswordRegex = Regex<"password:">
 
-let (|AskPassword|_|) chunks = 
-    let regex = AskPasswordRegex()
-    let m = chunks |> Chunks.getText |> regex.TypedMatch
-    if m.Success 
-        then 
-        Some <| AskPassword { 
-            Url =   m.url.Value;
-            Realm = m.realm.Value;
-            User =  m.user.Value }
-        else None
+let matches (rx: unit -> #System.Text.RegularExpressions.Regex) chunks =
+    chunks
+    |> Chunks.getTextChunks
+    |> List.map (fun ch -> rx().Match ch)
 
-let (|AskUser|_|) chunks = 
-    let regex = AskUserRegex()
-    let m = chunks |> Chunks.getText |> regex.TypedMatch
-    if m.Success 
-        then 
-        Some <| AskUser { 
-            Url =   m.url.Value;
-            Realm = m.realm.Value }
-        else None
+let has regex chunks =
+    chunks
+    |> matches regex
+    |> List.tryFind (fun m -> m.Success && m.Groups.Count > 1)
+    |> Option.map (fun m -> m.Groups.[1].Value)
+
+let asks rx chunks =
+    chunks
+    |> matches rx
+    |> List.exists (fun m -> m.Success)
+
+let (|AskSome|_|) c = 
+    let url = has UrlRegex c
+    match (has RealmRegex c, has UserRegex c, asks AskUserRegex c, asks AskPasswordRegex c) with
+    | (Some realm, Some user, _, true) -> AskPassword { Url = url; Realm = realm; User = user } |> Some
+    | (Some realm, _, true, _) -> AskUser { Url = url; Realm = realm } |> Some
+    | _ -> None
 
 let alreadyExists chunks = 
     chunks
@@ -46,8 +51,7 @@ let rec maybeAsk result =
 
     | Callback (chunks, push, close) -> 
         match chunks with
-        | AskPassword data -> Ask (AskPassword data, push >> maybeAsk, close)
-        | AskUser data -> Ask (AskUser data, push >> maybeAsk, close)
+        | AskSome data -> Ask (data, push >> maybeAsk, close)
         | _ -> MaybeAsk.Fail (chunks |> Chunks.getText)
 
 // statuses
@@ -73,17 +77,21 @@ let parseBranches chunks =
 
 // changesets
 
-let changesetTemplate = "{rev}" + sym + "{node}" + sym + "{author}" + sym + "{date|isodate}" + sym + "{desc}" + sym + "{branch}" + sym + "{phase}"
+let changesetTemplate = "{rev}" + sym + "{node}" + sym + "{author}" + sym + "{date|isodate}" + sym + "{desc}" + sym + "{branch}" + sym + "{phase}" + sym + "{p1node}" + sym + "{p2node}"
 
 let parseChangeset (x:string) =
     let fields = x.Split([|sym|], StringSplitOptions.RemoveEmptyEntries) 
-    { Revnumber = Int32.Parse(fields.[0]);
-    Hash = fields.[1];
-    Author = fields.[2];
-    Date = DateTime.Parse(fields.[3]);
-    Summary = fields.[4];
-    Branch = fields.[5];
-    Phase = fields.[6]; }
+    { 
+        Revnumber = Int32.Parse(fields.[0]);
+        Hash = fields.[1];
+        Author = fields.[2];
+        Date = DateTime.Parse(fields.[3]);
+        Summary = fields.[4];
+        Branch = fields.[5];
+        Phase = fields.[6]; 
+        Parent1 = fields.[7]; 
+        Parent2 = fields.[8]; 
+    }
 
 let parseChangesets = Chunks.getChunksFromResult >> List.map parseChangeset
 

@@ -14,7 +14,7 @@ type AppModel(dialogs: IDialogService) as self =
     let mutable status = ""
     let mutable tabIndex = 0
     let mutable branches = []
-    let mutable dir : string option = Some "D:\hydrargyrum.hg"
+    let mutable dir : string option = None
 
     let modeSwitched _ =
         match self.Mode, dir with
@@ -23,7 +23,9 @@ type AppModel(dialogs: IDialogService) as self =
         | _ -> ()
         self.TabIndex <- int self.Mode
         self.StatusBar <- sprintf "%A" self.Mode
-        self.Branches <- Commands.branches dir.Value
+        match dir with
+        | Some path -> self.Branches <- Commands.branches dir.Value
+        | None -> ()
 
     let changeStatus status = self.StatusBar <- status
     let changeDir path =
@@ -43,7 +45,6 @@ type AppModel(dialogs: IDialogService) as self =
                 self.StatusBar <- password
                 password |> push |> parseMaybeAsk (success, failure)
             | _ -> ()
-            success |> changeStatus
             close()
 
     let init(path) = 

@@ -20,6 +20,19 @@
                 <MenuItem Header="Init Repository..." Command="{Binding InitRepository}" />
                 <MenuItem Header="Clone Repository..." />
                 <Separator />
+                <MenuItem Header="Recent" ItemsSource="{Binding Recent}">
+                    <MenuItem.ItemContainerStyle>
+                        <Style TargetType="{x:Type MenuItem}">
+                            <Setter Property="Command" Value="{Binding DataContext.OpenRepo, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
+                            <Setter Property="CommandParameter" Value="{Binding}" />
+                        </Style>
+                    </MenuItem.ItemContainerStyle>
+                    <MenuItem.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}"/>
+                        </DataTemplate>
+                    </MenuItem.ItemTemplate>
+                </MenuItem>
                 <MenuItem Header="Exit" Click="Exit" />
             </MenuItem>
             <MenuItem Header="Repository">

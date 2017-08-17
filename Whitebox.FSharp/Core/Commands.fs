@@ -27,6 +27,10 @@ let currentStatus dir =
 let commitStatus dir hash =
     use cmd = start dir
     cmd.Command("status", "--change", hash) |> Parsers.parseFileStatuses
+
+let revert dir path =
+    use cmd = start dir
+    cmd.Command("revert", "-I", path) |> ignore
     
 let pull dir =
     let cmd = start dir // (!) let for ask commands

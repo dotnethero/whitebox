@@ -15,6 +15,7 @@ type AppModel(dialogs: IDialogService) as self =
     let mutable tabIndex = 0
     let mutable branches = []
     let mutable dir : string option = None
+    let mutable recent = ["""D:\Projects\trash\Hydrargyrum.hg"""]
 
     let modeSwitched _ =
         match self.Mode, dir with
@@ -86,10 +87,11 @@ type AppModel(dialogs: IDialogService) as self =
         modeSwitched()
 
     // commands
-    member x.OpenRepository = new TrueCommand (openCommand)
-    member x.InitRepository = new TrueCommand (initCommand)
-    member x.Pull = new TrueCommand (pullCommand)
-    member x.Push = new TrueCommand (pushCommand)
+    member x.OpenRepository = openCommand |> ucom
+    member x.InitRepository = initCommand |> ucom
+    member x.Pull = pullCommand |> ucom
+    member x.Push = pushCommand |> ucom
+    member x.OpenRepo = changeDir |> pcom
 
     // properties
     member x.Mode 
@@ -116,6 +118,7 @@ type AppModel(dialogs: IDialogService) as self =
             branches <- branches'
             x.OnPropertyChanged <@ x.Branches @>
 
+    member val Recent = recent with get
     member val History: HistoryModel = HistoryModel() with get
     member val Workspace: WorkspaceModel = WorkspaceModel() with get
     member val Modes = [MainWindowMode.``Working copy``; MainWindowMode.History; MainWindowMode.Shelves] with get

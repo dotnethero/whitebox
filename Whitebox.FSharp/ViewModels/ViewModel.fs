@@ -15,8 +15,21 @@ type TrueCommand (action:(unit -> unit)) =
         member x.CanExecute arg = true
         member x.Execute _ = action()
 
+type ParamCommand<'a> (action:('a -> unit)) =
+    let event = new DelegateEvent<EventHandler>()
+    interface ICommand with
+        [<CLIEvent>]
+        member x.CanExecuteChanged = event.Publish
+        member x.CanExecute arg = true
+        member x.Execute arg = 
+            arg |> unbox |> action
+        
 [<AutoOpen>]
 module Utils =
+
+    let ucom action = new TrueCommand(action)
+    let pcom<'a> action = new ParamCommand<'a>(action)
+
     let _null opt : obj =
         match opt with
         | Some file -> box file

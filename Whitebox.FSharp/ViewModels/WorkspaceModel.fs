@@ -2,6 +2,7 @@
 open System
 open Whitebox
 open Whitebox.Types
+open Utils
 
 type WorkspaceModel() as self =
     inherit ViewModel()
@@ -58,9 +59,15 @@ type WorkspaceModel() as self =
         |> Commands.commit dir x.Comment 
         |> ignore
         
-    member x.OpenContainingFolder _ =
-        Open.directory dir
+    member x.OpenContainingFolder _ = Open.directory dir
+    member x.Refresh _ = x.Files <- Commands.currentStatus dir
+    member x.Revert _ = 
+        currentFile 
+        |> Option.map (fun f -> f.FilePath |> Commands.revert dir) 
+        |> ignore
+        x.Refresh()
 
     member x.CommitCommand = new TrueCommand (x.Commit)
-
-    member x.OpenContainingFolderCommand =  new TrueCommand (x.OpenContainingFolder)
+    member x.RefreshCommand = new TrueCommand (x.Refresh)
+    member x.RevertCommand = new TrueCommand (x.Revert)
+    member x.OpenContainingFolderCommand = new TrueCommand (x.OpenContainingFolder)

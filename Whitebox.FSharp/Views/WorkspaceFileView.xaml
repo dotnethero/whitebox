@@ -26,6 +26,8 @@
         <ListView Grid.Row="2" BorderThickness="0" ItemsSource="{Binding Files}" SelectedItem="{Binding CurrentFile}">
             <ListView.ContextMenu>
                 <ContextMenu>
+                    <MenuItem Header="Refresh" Command="{Binding RefreshCommand}" />
+                    <MenuItem Header="Revert" Command="{Binding RevertCommand}" />
                     <MenuItem Header="Open Containing Folder" Command="{Binding OpenContainingFolderCommand}" />
                 </ContextMenu>
             </ListView.ContextMenu>

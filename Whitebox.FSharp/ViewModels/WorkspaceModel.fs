@@ -61,13 +61,11 @@ type WorkspaceModel() as self =
         
     member x.OpenContainingFolder _ = Open.directory dir
     member x.Refresh _ = x.Files <- Commands.currentStatus dir
-    member x.Revert _ = 
-        currentFile 
-        |> Option.map (fun f -> f.FilePath |> Commands.revert dir) 
-        |> ignore
+    member x.Revert (file: FileStatus) = 
+        file.FilePath |> Commands.revert dir
         x.Refresh()
 
-    member x.CommitCommand = new TrueCommand (x.Commit)
-    member x.RefreshCommand = new TrueCommand (x.Refresh)
-    member x.RevertCommand = new TrueCommand (x.Revert)
-    member x.OpenContainingFolderCommand = new TrueCommand (x.OpenContainingFolder)
+    member x.CommitCommand = ucom x.Commit
+    member x.RefreshCommand = ucom x.Refresh
+    member x.RevertCommand = pcom x.Revert
+    member x.OpenContainingFolderCommand = ucom x.OpenContainingFolder

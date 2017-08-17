@@ -8,7 +8,7 @@
     <d:Window.DataContext>
         <viewModels:WorkspaceModel />
     </d:Window.DataContext>
-    <Grid>
+    <Grid x:Name="Workspace">
         <Grid.RowDefinitions>
             <RowDefinition MinHeight="60" Height="75"></RowDefinition>
             <RowDefinition Height="5"></RowDefinition>
@@ -27,20 +27,27 @@
             <ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Refresh" Command="{Binding RefreshCommand}" />
-                    <MenuItem Header="Revert" Command="{Binding RevertCommand}" />
                     <MenuItem Header="Open Containing Folder" Command="{Binding OpenContainingFolderCommand}" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock>
-                        <TextBlock Text="{Binding Modifier}" FontWeight="Bold" Width="18" Height="18" TextAlignment="Center" VerticalAlignment="Center" Background="AliceBlue"></TextBlock>
-                        <TextBlock Padding="1" Margin="2"  Width="18" Height="18" VerticalAlignment="Center" FontWeight="Bold" Background="AliceBlue">
-                            <CheckBox IsChecked="{Binding Selected}"></CheckBox>
+                <ItemContainerTemplate>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
+                        <StackPanel.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Revert" Command="{Binding Path=DataContext.RevertCommand, Source={x:Reference Workspace}}" CommandParameter="{Binding}" />
+                                <MenuItem Header="Reveal in folder" Command="{Binding OpenContainingFolderCommand}" />
+                            </ContextMenu>
+                        </StackPanel.ContextMenu>
+                        <TextBlock>
+                            <TextBlock Text="{Binding Modifier}" FontWeight="Bold" Width="18" Height="18" TextAlignment="Center" VerticalAlignment="Center" Background="AliceBlue"></TextBlock>
+                            <TextBlock Padding="1" Margin="2"  Width="18" Height="18" VerticalAlignment="Center" FontWeight="Bold" Background="AliceBlue">
+                                <CheckBox IsChecked="{Binding Selected}"></CheckBox>
+                            </TextBlock>
+                            <TextBlock Text="{Binding FilePath}"></TextBlock>
                         </TextBlock>
-                        <TextBlock Text="{Binding FilePath}"></TextBlock>
-                    </TextBlock>
-                </DataTemplate>
+                    </StackPanel>
+                </ItemContainerTemplate>
             </ListView.ItemTemplate>
         </ListView>
     </Grid>

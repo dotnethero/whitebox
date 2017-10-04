@@ -15,7 +15,10 @@ type AppModel(dialogs: IDialogService) as self =
     let mutable tabIndex = 0
     let mutable branches = []
     let mutable dir : string option = None
-    let mutable recent = ["""D:\Projects\trash\Hydrargyrum.hg"""]
+    let mutable recent = [
+        """D:\Projects\trash\Hydrargyrum.hg""";
+        """D:\Projects\Tamga.hg"""
+    ]
 
     let modeSwitched _ =
         match self.Mode, dir with

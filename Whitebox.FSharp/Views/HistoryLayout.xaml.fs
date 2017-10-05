@@ -9,6 +9,7 @@ open System.Windows.Controls
 open System.Windows.Controls.Primitives
 open Whitebox.Types
 open Whitebox.ViewModels
+open FSharp.Control.Reactive
 
 type HistoryLayoutBase = FsXaml.XAML<"Views/HistoryLayout.xaml">
 type HistoryLayout() as self =
@@ -18,18 +19,16 @@ type HistoryLayout() as self =
     let dia = radius * 2.0
     let left = 25.0
     
-    let gatherOne (lv: ListView) (element: ListViewItem) = 
-        let location = element.TranslatePoint(Point(left, element.ActualHeight / 2.0), lv);
-        let commit = element.DataContext :?> Changeset
-        location, commit
-        
     let gatherMany (lv: ListView) =
+        let generator = lv.ItemContainerGenerator
+        let toListViewItem item = (generator.ContainerFromItem item) :?> ListViewItem
+        let toPoint (element: ListViewItem) = element.TranslatePoint(Point(left, element.ActualHeight / 2.0), lv)
+        let asChangeset (ch: obj) = ch :?> Changeset
         lv.Items
-        |> Seq.cast<obj>
-        |> Seq.map lv.ItemContainerGenerator.ContainerFromItem
-        |> Seq.cast<ListViewItem>
-        |> Seq.filter (fun item -> item <> null)
-        |> Seq.map (gatherOne lv)
+            |> Seq.cast<obj>
+            |> Seq.map (fun ch -> (toListViewItem ch, asChangeset ch))
+            |> Seq.filter (fun (lvi, _) -> lvi <> null)
+            |> Seq.map (fun (lvi, ch) -> (toPoint lvi, ch))
 
     let makeMarker (location: Point, _) = 
         let dot = new Ellipse(Fill = Brushes.White, Stroke = Brushes.Black, StrokeThickness = 1.5, Width = dia, Height = dia)
@@ -44,15 +43,23 @@ type HistoryLayout() as self =
         line.X2 <- p2.X
         line.Y2 <- p2.Y
         let brush = Brushes.Black
-        line.StrokeThickness <- 2.0
+        line.StrokeThickness <- 1.5
         line.Stroke <- brush
         line :> UIElement
+
+    let makeMarkeredLine ((p1: Point, c1), (p2: Point, c2)) = seq {
+        yield makeLine ((p1, c1), (p2, c2))
+        yield makeMarker (p1, c1)
+        yield makeMarker (p2, c2)
+    }
     
     do self.listview.ItemContainerGenerator.StatusChanged
-        |> Observable.filter (fun _ -> self.listview.ItemContainerGenerator.Status = GeneratorStatus.ContainersGenerated)
+        |> Observable.filter (fun _ -> 
+            self.listview.ItemContainerGenerator.Status = GeneratorStatus.ContainersGenerated &&
+            self.listview.Items.Count > 0)
         |> Observable.subscribe self.Draw
         |> ignore
-        
+
     member private this.Draw e =
 
         let clear _ = this.canvas.Children.Clear()
@@ -61,19 +68,28 @@ type HistoryLayout() as self =
         let items = 
             this.listview
             |> gatherMany
-            |> Seq.filter (fun (loc, _) -> loc.Y > 30.0)
+            |> Seq.filter (fun (p, _) -> p.Y > 30.0)
             |> Seq.toList
 
         clear()
-        items
-            |> List.allPairs items
-            |> List.filter (fun ((_, c1), (_, c2)) -> 
-                c1.Parent1 = c2.Hash ||
-                c1.Parent2 = c2.Hash )
-            |> List.map makeLine
-            |> List.iter draw
 
-        items
-            |> List.map makeMarker
-            |> List.iter draw
+        let rec createTree child intendation =
+            let (_, hc) = child;
+            let parent1 = items |> List.tryFind (fun (_,c) -> hc.Parent1 = c.Hash)
+            let parent2 = items |> List.tryFind (fun (_,c) -> hc.Parent2 = c.Hash)
+            match (parent1, parent2) with
+                | (Some parent1, Some parent2) -> 
+                    let (childPoint: Point, _) = child
+                    let (parentPoint: Point, changeset) = parent2  
+                    let newParentPoint = Point(childPoint.X + 50.0, parentPoint.Y)
+                    let newParent2 = (newParentPoint, changeset)
+                    [(child, parent1); (child, newParent2)] @ createTree parent1 intendation @ createTree newParent2 intendation
+
+                | (Some parent1, None) -> [(child, parent1)] @ createTree parent1 intendation
+                | _ -> []
+        
+        if not items.IsEmpty then
+            createTree items.Head 0.0
+                |> Seq.collect makeMarkeredLine
+                |> Seq.iter draw
 
